@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Textos visibles de BBVA Bonifica. Todo texto de pantalla va en strings.xml (o aquí). app_name sigue en strings.xml -->
+<resources>
+    <string name="reintentar">Reintentar</string>
+</resources>
