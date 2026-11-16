@@ -2,10 +2,17 @@ package com.bbva.bonifica.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Paleta BBVA (diseño §3). Verificar hex contra la guía de marca; se cambian SOLO aquí.
+val BbvaNavy = Color(0xFF072146)
+val BbvaBlue = Color(0xFF004481)
+val BbvaBlueMedium = Color(0xFF1464A5)
+val BbvaBlueLight = Color(0xFF1973B8)
+val BbvaAqua = Color(0xFF2DCCCD)
+val BbvaSky = Color(0xFF5BBEFF)
+val BbvaWhite = Color(0xFFFFFFFF)
+val BbvaGray50 = Color(0xFFF4F4F4)
+val BbvaGray300 = Color(0xFFC9CED6)
+val BbvaGray700 = Color(0xFF5C6670)
+val Success = Color(0xFF48AE64)
+val Warning = Color(0xFFF8CD51)
+val Error = Color(0xFFDA3851)
