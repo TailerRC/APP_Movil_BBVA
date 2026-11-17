@@ -48,6 +48,11 @@
     <string name="perfil_dni">DNI</string>
     <string name="perfil_cuenta_inactiva">Tu cuenta está inactiva.</string>
     <string name="perfil_sin_datos">No hay datos de perfil disponibles.</string>
+    <string name="perfil_seccion_datos_personales">Datos personales</string>
+    <string name="perfil_seccion_cuenta">Datos de la cuenta</string>
+    <string name="perfil_seccion_accesos">Accesos rápidos</string>
+    <string name="perfil_catalogo_desc">Tarifas y comisiones de tus productos</string>
+    <string name="perfil_operaciones_desc">Tus operaciones y puntos de atención</string>
     <string name="cerrar_sesion">Cerrar sesión</string>
 
     <!-- Módulo 2 · Catálogo de Comisiones -->
