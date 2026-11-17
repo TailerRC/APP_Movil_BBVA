@@ -2,4 +2,51 @@
 <!-- Textos visibles de BBVA Bonifica. Todo texto de pantalla va en strings.xml (o aquí). app_name sigue en strings.xml -->
 <resources>
     <string name="reintentar">Reintentar</string>
+    <string name="volver">Volver</string>
+    <string name="logo_bbva" translatable="false">BBVA</string>
+
+    <!-- Módulo 1 · Acceso y Perfil -->
+    <string name="splash_tagline">Paga menos comisión.</string>
+
+    <string name="login_titulo">Bienvenido</string>
+    <string name="login_subtitulo">Ingresa tu correo y contraseña.</string>
+    <string name="login_modo_demo">Modo demo: entra con cliente1@example.com o negocio1@example.com.</string>
+    <string name="campo_correo">Correo</string>
+    <string name="correo_ejemplo">nombre@ejemplo.com</string>
+    <string name="campo_contrasena">Contraseña</string>
+    <string name="contrasena_ejemplo">Tu contraseña</string>
+    <string name="mostrar_contrasena">Mostrar contraseña</string>
+    <string name="ocultar_contrasena">Ocultar contraseña</string>
+    <string name="correo_requerido">Escribe tu correo</string>
+    <string name="correo_formato">Revisa el correo. Debe incluir @ y un dominio, por ejemplo nombre@ejemplo.com</string>
+    <string name="contrasena_requerida">Escribe tu contraseña</string>
+    <string name="ingresar">Ingresar</string>
+    <string name="iniciando_sesion">Iniciando sesión…</string>
+
+    <string name="nueva_contrasena_titulo">Elige una contraseña nueva</string>
+    <string name="nueva_contrasena_subtitulo">La usarás para entrar a partir de ahora.</string>
+    <string name="campo_contrasena_nueva">Nueva contraseña</string>
+    <string name="campo_confirmar_contrasena">Confirmar contraseña</string>
+    <string name="regla_min8">Mínimo 8 caracteres</string>
+    <string name="regla_mayuscula">Una mayúscula</string>
+    <string name="regla_minuscula">Una minúscula</string>
+    <string name="regla_numero">Un número</string>
+    <string name="regla_pendiente">La contraseña no cumple todos los requisitos</string>
+    <string name="contrasenas_no_coinciden">Las contraseñas no coinciden</string>
+    <string name="guardar_contrasena">Guardar contraseña</string>
+    <string name="guardando_contrasena">Guardando…</string>
+    <string name="sesion_vencida">Tu sesión venció. Vuelve a iniciar sesión.</string>
+    <string name="volver_a_iniciar_sesion">Volver a iniciar sesión</string>
+
+    <string name="perfil_titulo">Perfil</string>
+    <string name="perfil_segmento">Segmento</string>
+    <string name="perfil_ciudad">Ciudad</string>
+    <string name="perfil_estado">Estado</string>
+    <string name="perfil_desde">Cliente desde</string>
+    <string name="perfil_correo">Correo</string>
+    <string name="perfil_telefono">Teléfono</string>
+    <string name="perfil_dni">DNI</string>
+    <string name="perfil_cuenta_inactiva">Tu cuenta está inactiva.</string>
+    <string name="perfil_sin_datos">No hay datos de perfil disponibles.</string>
+    <string name="cerrar_sesion">Cerrar sesión</string>
 </resources>

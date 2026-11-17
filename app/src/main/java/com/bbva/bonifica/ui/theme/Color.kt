@@ -16,3 +16,10 @@ val BbvaGray700 = Color(0xFF5C6670)
 val Success = Color(0xFF48AE64)
 val Warning = Color(0xFFF8CD51)
 val Error = Color(0xFFDA3851)
+
+/**
+ * Variante accesible de Error para texto pequeño: `Error` sobre `BbvaGray50`
+ * no llega a 4.5:1 (AA). Se usa en mensajes de campo; íconos, bordes y chips
+ * siguen usando `Error`.
+ */
+val ErrorDark = Color(0xFFB31F38)
