@@ -1,8 +1,11 @@
 package com.bbva.bonifica.ui.theme
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
 private val LightColors = lightColorScheme(
     primary = BbvaBlue,
@@ -22,7 +25,11 @@ fun BonificaTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = LightColors,
         typography = Typography,
-        shapes = BonificaShapes,
-        content = content
-    )
+        shapes = BonificaShapes
+    ) {
+        // Sin esta Surface el fondo de pantalla sería el de la ventana (blanco), no BbvaGray50.
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+            content()
+        }
+    }
 }

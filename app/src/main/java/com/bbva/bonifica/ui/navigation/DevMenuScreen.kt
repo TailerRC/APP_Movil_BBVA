@@ -14,8 +14,9 @@ import androidx.compose.ui.unit.dp
 import com.bbva.bonifica.ui.components.SecondaryButton
 
 /**
- * Menú TEMPORAL para saltar a cualquier pantalla mientras no existan Splash/Login/barras.
- * Persona B lo reemplaza por la pantalla Splash real.
+ * Menú TEMPORAL para saltar a cualquier pantalla mientras no todas tengan su
+ * entrada real. Se entra desde el splash con pulsación larga en el logo (§14)
+ * y se retira cuando el flujo completo esté cableado.
  */
 @Composable
 fun DevMenuScreen(onNavigate: (String) -> Unit) {

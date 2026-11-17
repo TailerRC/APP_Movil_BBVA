@@ -3,9 +3,12 @@ package com.bbva.bonifica.ui.navigation
 /** Rutas de navegación (diseño §11.1). */
 object Routes {
     const val SPLASH = "splash"
+    // Menú temporal de desarrollo (§14): se entra con pulsación larga en el logo
+    // del splash y se retira cuando todas las pantallas tengan su entrada.
+    const val DEV_MENU = "dev_menu"
     const val LOGIN = "login"
-    // Nota: `cognitoSession` es un texto largo; es mejor pasarlo por un estado compartido (ViewModel)
-    // que dentro de la URL de navegación. Decisión de Persona B.
+    // Nota: `cognitoSession` es un texto largo; viaja en un estado compartido
+    // (AccesoViewModel, con scope de Activity) y no dentro de la URL de navegación.
     const val NEW_PASSWORD = "new_password"
     const val HOME_CLIENTE = "home_cliente"
     const val CATALOGO = "catalogo"
