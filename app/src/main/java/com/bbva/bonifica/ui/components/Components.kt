@@ -26,6 +26,7 @@ import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,6 +37,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -70,7 +72,8 @@ import com.bbva.bonifica.ui.theme.Success
 import com.bbva.bonifica.ui.theme.Warning
 
 // Componentes reutilizables (diseño §9). Persona A agrega el resto
-// (InfoCard, ProductCard, TimelineItem, ConfirmDialog, RoleGuard...).
+// (InfoCard, ProductCard, TimelineItem, RoleGuard...); ConfirmDialog lo aporta
+// el Módulo 3 porque lo necesita para confirmar/anular.
 
 @Composable
 fun PrimaryButton(
@@ -102,16 +105,23 @@ fun SecondaryButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    loading: Boolean = false,
+    /** Texto mientras carga (ej. "Anulando…"); si es null se muestra `text`. */
+    loadingText: String? = null
 ) {
     OutlinedButton(
         onClick = onClick,
-        enabled = enabled,
+        enabled = enabled && !loading,
         modifier = modifier.fillMaxWidth().height(52.dp),
         shape = RoundedCornerShape(26.dp),
         border = BorderStroke(1.dp, BbvaBlue)
     ) {
-        Text(text, color = BbvaBlue)
+        if (loading) {
+            CircularProgressIndicator(modifier = Modifier.size(20.dp), color = BbvaBlue, strokeWidth = 2.dp)
+            Spacer(Modifier.width(10.dp))
+        }
+        Text(if (loading) loadingText ?: text else text, color = BbvaBlue)
     }
 }
 
@@ -389,4 +399,37 @@ fun RequirementRow(text: String, satisfied: Boolean, modifier: Modifier = Modifi
             color = if (satisfied) BbvaNavy else BbvaGray700
         )
     }
+}
+
+/**
+ * Diálogo de confirmar/anular (§9): se usa antes de **Confirmar** y de **Anular**
+ * un descuento, porque ambos cambian el estado de forma definitiva (§12).
+ */
+@Composable
+fun ConfirmDialog(
+    title: String,
+    message: String,
+    confirmText: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+    dismissText: String = stringResource(R.string.cancelar)
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        modifier = modifier,
+        containerColor = BbvaWhite,
+        title = { Text(title, color = BbvaNavy, style = MaterialTheme.typography.titleLarge) },
+        text = { Text(message, color = BbvaNavy, style = MaterialTheme.typography.bodyMedium) },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(confirmText, color = BbvaBlue, style = MaterialTheme.typography.labelLarge)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(dismissText, color = BbvaGray700, style = MaterialTheme.typography.labelLarge)
+            }
+        }
+    )
 }

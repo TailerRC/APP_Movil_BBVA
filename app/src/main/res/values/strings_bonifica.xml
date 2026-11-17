@@ -83,6 +83,45 @@
     <string name="producto_no_disponible_desc">Este producto está descontinuado y no permite calcular descuentos.</string>
     <string name="producto_no_encontrado">No se encontró la información del producto.</string>
 
+    <!-- Módulo 3 · Descuentos (núcleo) -->
+    <string name="calcular_titulo">Calcular descuento</string>
+    <string name="calcular_seccion_operacion">Operación</string>
+    <string name="calcular_seccion_producto">Producto</string>
+    <string name="calcular_recomendada">Recomendada</string>
+    <string name="calcular_cantidad">Cantidad</string>
+    <string name="calcular_disminuir">Disminuir cantidad</string>
+    <string name="calcular_aumentar">Aumentar cantidad</string>
+    <string name="calcular_sin_producto">Aún no has elegido un producto. Selecciona uno del catálogo para poder calcular tu descuento.</string>
+    <string name="calcular_ir_catalogo">Ir al catálogo</string>
+    <string name="calcular_calculando">Calculando…</string>
+
+    <string name="resultado_titulo">Resultado</string>
+    <string name="resultado_no_encontrado">No se encontró el descuento solicitado.</string>
+    <string name="resultado_producto">Producto</string>
+    <string name="resultado_cantidad">Cantidad</string>
+    <string name="resultado_operacion">Operación</string>
+    <string name="resultado_fecha">Fecha de cálculo</string>
+    <string name="resultado_bruto">Bruto</string>
+    <string name="resultado_politica">Política aplicada</string>
+    <string name="resultado_sin_politica">Sin descuento aplicable</string>
+    <string name="resultado_descuento">Descuento</string>
+    <string name="resultado_neto">Neto a pagar</string>
+    <string name="resultado_pago_seccion">Medio de pago</string>
+    <string name="pago_cargo_cuenta">Cargo en cuenta</string>
+    <string name="pago_tarjeta_debito">Tarjeta de débito</string>
+    <string name="pago_efectivo_ventanilla">Efectivo en ventanilla</string>
+    <string name="resultado_confirmar">Confirmar</string>
+    <string name="resultado_confirmando">Confirmando…</string>
+    <string name="resultado_anular">Anular</string>
+    <string name="resultado_anulando">Anulando…</string>
+    <string name="resultado_ver_comprobante">Ver comprobante</string>
+    <string name="resultado_anulado">Este descuento fue anulado: no se generó ninguna orden de pago.</string>
+    <string name="dialog_confirmar_titulo">¿Confirmar el descuento?</string>
+    <string name="dialog_confirmar_mensaje">Se generará la orden de pago por el monto neto.</string>
+    <string name="dialog_anular_titulo">¿Anular el descuento?</string>
+    <string name="dialog_anular_mensaje">Esta acción no se puede deshacer y no se generará ninguna orden de pago.</string>
+    <string name="cancelar">Cancelar</string>
+
     <!-- Módulo 5 · Operaciones Comerciales -->
     <string name="operaciones_titulo">Mis operaciones</string>
     <string name="operaciones_subtitulo">Operaciones y puntos de atención asociados a tu cuenta.</string>

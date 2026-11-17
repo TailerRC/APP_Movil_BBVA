@@ -30,6 +30,10 @@ import com.bbva.bonifica.ui.catalogo.ProductoDetalleScreen
 import com.bbva.bonifica.ui.catalogo.ProductoDetalleViewModel
 import com.bbva.bonifica.ui.catalogo.ProductosScreen
 import com.bbva.bonifica.ui.catalogo.ProductosViewModel
+import com.bbva.bonifica.ui.descuentos.CalcularScreen
+import com.bbva.bonifica.ui.descuentos.CalcularViewModel
+import com.bbva.bonifica.ui.descuentos.ResultadoScreen
+import com.bbva.bonifica.ui.descuentos.ResultadoViewModel
 import com.bbva.bonifica.ui.operaciones.OperacionDetalleScreen
 import com.bbva.bonifica.ui.operaciones.OperacionDetalleViewModel
 import com.bbva.bonifica.ui.operaciones.OperacionesScreen
@@ -239,8 +243,45 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                 navArgument("pos") { type = NavType.StringType; nullable = true; defaultValue = null },
                 navArgument("prod") { type = NavType.StringType; nullable = true; defaultValue = null }
             )
-        ) { Placeholder("Calcular descuento") }
-        composable(Routes.RESULTADO) { Placeholder("Resultado / Confirmar / Anular") }
+        ) { backStackEntry ->
+            val pos = backStackEntry.arguments?.getString("pos")
+            val prod = backStackEntry.arguments?.getString("prod")
+            val viewModel: CalcularViewModel = viewModel(
+                key = "calcular_${pos}_$prod",
+                factory = rememberAppFactory {
+                    CalcularViewModel(
+                        initialPosRef = pos,
+                        productRef = prod,
+                        authRepository = it.authRepository,
+                        customerRepository = it.customerRepository,
+                        catalogRepository = it.catalogRepository,
+                        discountRepository = it.discountRepository
+                    )
+                }
+            )
+            CalcularScreen(
+                viewModel = viewModel,
+                onResultado = { dpId -> navController.navigate(Routes.resultado(dpId)) },
+                onOpenCatalogo = { navController.navigate(Routes.CATALOGO) },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = Routes.RESULTADO,
+            arguments = listOf(navArgument("dpId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val dpId = backStackEntry.arguments?.getString("dpId").orEmpty()
+            val viewModel: ResultadoViewModel = viewModel(
+                key = "resultado_$dpId",
+                factory = rememberAppFactory { ResultadoViewModel(dpId, it.discountRepository) }
+            )
+            ResultadoScreen(
+                viewModel = viewModel,
+                onVerComprobante = { payId -> navController.navigate(Routes.comprobante(payId)) },
+                onBack = { navController.popBackStack() }
+            )
+        }
 
         // Módulo 6 · Pagos e Historial (Persona E)
         composable(Routes.PAGOS) { Placeholder("Pagos de la operación") }

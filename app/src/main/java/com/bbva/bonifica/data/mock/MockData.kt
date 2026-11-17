@@ -102,11 +102,33 @@ object MockData {
         )
     )
 
+    /**
+     * Pagos sembrados (§14): DP-0001 ya está `APPLIED` y pagado, para que la ruta 12
+     * tenga un comprobante desde el primer arranque. Los que genere el Módulo 3 al
+     * confirmar se añaden a [MockStore.payments].
+     */
+    val payments = listOf(
+        PaymentOrder(
+            paymentOrderId = "PAY-0001", discountPricingId = "DP-0001",
+            customerReference = CLIENTE_REF, pointOfSaleReference = "SALE-SEED-0001",
+            amount = 303.60, currency = "PEN", paymentMethod = "CARGO_EN_CUENTA",
+            status = "PAID", paymentDate = "2026-02-10T11:05:00Z"
+        )
+    )
+
     val policies = listOf(
         Policy(
             policyId = "POL-022", name = "12% en tarjetas", discountType = "PERCENTAGE",
             discountValue = 12.0, scope = "CATEGORY", scopeReference = "TARJETAS",
             minimumAmount = 0.0, currency = "PEN", channel = "ALL",
+            validFrom = "2026-01-01", validTo = "2026-12-31", status = "ACTIVE"
+        ),
+        // Módulo 3: compite con POL-022 en sucursal para comprobar que el cálculo
+        // elige la MEJOR política (12% gana frente a 5%, §14).
+        Policy(
+            policyId = "POL-025", name = "5% general en ventanilla", discountType = "PERCENTAGE",
+            discountValue = 5.0, scope = "ALL", scopeReference = "*",
+            minimumAmount = 0.0, currency = "PEN", channel = "BRANCH",
             validFrom = "2026-01-01", validTo = "2026-12-31", status = "ACTIVE"
         )
     )

@@ -21,7 +21,9 @@ class FakeOperationRepository : OperationRepository {
 
     override suspend fun getDiscountsByOperation(ref: String): AppResult<List<DiscountPricing>> {
         delay(500)
-        val discounts = MockData.discounts.filter { it.pointOfSaleReference == ref }
+        // MockStore y no MockData: así se ven también los descuentos que acaba de
+        // calcular el Módulo 3 en esta sesión (§13).
+        val discounts = MockStore.discounts.filter { it.pointOfSaleReference == ref }
         return AppResult.Success(discounts)
     }
 }
