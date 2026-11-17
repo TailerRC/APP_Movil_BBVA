@@ -25,6 +25,15 @@ import com.bbva.bonifica.ui.acceso.PerfilScreen
 import com.bbva.bonifica.ui.acceso.PerfilViewModel
 import com.bbva.bonifica.ui.acceso.SplashScreen
 import com.bbva.bonifica.ui.acceso.SplashViewModel
+import com.bbva.bonifica.ui.catalogo.CategoriasScreen
+import com.bbva.bonifica.ui.catalogo.ProductoDetalleScreen
+import com.bbva.bonifica.ui.catalogo.ProductoDetalleViewModel
+import com.bbva.bonifica.ui.catalogo.ProductosScreen
+import com.bbva.bonifica.ui.catalogo.ProductosViewModel
+import com.bbva.bonifica.ui.operaciones.OperacionDetalleScreen
+import com.bbva.bonifica.ui.operaciones.OperacionDetalleViewModel
+import com.bbva.bonifica.ui.operaciones.OperacionesScreen
+import com.bbva.bonifica.ui.operaciones.OperacionesViewModel
 
 /** Pantalla vacía. Cada persona la reemplaza por su pantalla real en su rama. */
 @Composable
@@ -124,6 +133,8 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
             )
             PerfilScreen(
                 viewModel = viewModel,
+                onNavigateToCatalogo = { navController.navigate(Routes.CATALOGO) },
+                onNavigateToOperaciones = { navController.navigate(Routes.OPERACIONES) },
                 onLoggedOut = { role ->
                     acceso.reset()
                     navController.leaveSession(role)
@@ -132,13 +143,94 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         }
 
         // Módulo 2 · Catálogo (Persona C)
-        composable(Routes.CATALOGO) { Placeholder("Categorías") }
-        composable(Routes.CATALOGO_CATEGORIA) { Placeholder("Productos de categoría") }
-        composable(Routes.PRODUCTO) { Placeholder("Detalle de producto") }
+        composable(Routes.CATALOGO) {
+            CategoriasScreen(
+                onCategorySelected = { category ->
+                    navController.navigate(Routes.catalogoCategoria(category))
+                },
+                onBack = if (navController.previousBackStackEntry != null) {
+                    { navController.popBackStack() }
+                } else null
+            )
+        }
+
+        composable(
+            route = Routes.CATALOGO_CATEGORIA,
+            arguments = listOf(navArgument("category") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val category = backStackEntry.arguments?.getString("category").orEmpty()
+            val viewModel: ProductosViewModel = viewModel(
+                key = "productos_$category",
+                factory = rememberAppFactory { ProductosViewModel(category, it.catalogRepository) }
+            )
+            ProductosScreen(
+                viewModel = viewModel,
+                onProductSelected = { ref ->
+                    navController.navigate(Routes.producto(ref))
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = Routes.PRODUCTO,
+            arguments = listOf(navArgument("ref") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val ref = backStackEntry.arguments?.getString("ref").orEmpty()
+            val viewModel: ProductoDetalleViewModel = viewModel(
+                key = "producto_$ref",
+                factory = rememberAppFactory { ProductoDetalleViewModel(ref, it.catalogRepository) }
+            )
+            ProductoDetalleScreen(
+                viewModel = viewModel,
+                onCalcular = { productRef ->
+                    navController.navigate(Routes.calcular(prod = productRef))
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
 
         // Módulo 5 · Operaciones (Persona C)
-        composable(Routes.OPERACIONES) { Placeholder("Mis operaciones") }
-        composable(Routes.OPERACION) { Placeholder("Detalle de operación") }
+        composable(Routes.OPERACIONES) {
+            val viewModel: OperacionesViewModel = viewModel(
+                factory = rememberAppFactory {
+                    OperacionesViewModel(it.authRepository, it.customerRepository)
+                }
+            )
+            OperacionesScreen(
+                viewModel = viewModel,
+                onOperationSelected = { ref ->
+                    navController.navigate(Routes.operacion(ref))
+                },
+                onBack = if (navController.previousBackStackEntry != null) {
+                    { navController.popBackStack() }
+                } else null
+            )
+        }
+
+        composable(
+            route = Routes.OPERACION,
+            arguments = listOf(navArgument("ref") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val ref = backStackEntry.arguments?.getString("ref").orEmpty()
+            val viewModel: OperacionDetalleViewModel = viewModel(
+                key = "operacion_$ref",
+                factory = rememberAppFactory { OperacionDetalleViewModel(ref, it.operationRepository) }
+            )
+            OperacionDetalleScreen(
+                viewModel = viewModel,
+                onCalcularDescuento = { posRef ->
+                    navController.navigate(Routes.calcular(pos = posRef))
+                },
+                onVerPagos = { posRef ->
+                    navController.navigate(Routes.pagos(posRef))
+                },
+                onVerDescuento = { dpId ->
+                    navController.navigate(Routes.resultado(dpId))
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
 
         // Módulo 3 · Descuentos (Persona D)
         composable(

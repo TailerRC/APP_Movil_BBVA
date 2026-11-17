@@ -49,4 +49,62 @@
     <string name="perfil_cuenta_inactiva">Tu cuenta está inactiva.</string>
     <string name="perfil_sin_datos">No hay datos de perfil disponibles.</string>
     <string name="cerrar_sesion">Cerrar sesión</string>
+
+    <!-- Módulo 2 · Catálogo de Comisiones -->
+    <string name="catalogo_titulo">Catálogo de comisiones</string>
+    <string name="catalogo_subtitulo">Selecciona una categoría para ver los productos y tarifas aplicables.</string>
+    <string name="categoria_cuentas">Cuentas</string>
+    <string name="categoria_cuentas_desc">Cuentas de ahorro, sueldo y cuentas corrientes</string>
+    <string name="categoria_tarjetas">Tarjetas</string>
+    <string name="categoria_tarjetas_desc">Tarjetas de débito y crédito con beneficios</string>
+    <string name="categoria_prestamos">Préstamos</string>
+    <string name="categoria_prestamos_desc">Préstamos personales, vehiculares e hipotecarios</string>
+    <string name="categoria_seguros">Seguros</string>
+    <string name="categoria_seguros_desc">Protección para tus tarjetas, vida y viajes</string>
+    <string name="categoria_transferencias">Transferencias</string>
+    <string name="categoria_transferencias_desc">Transferencias interbancarias e internacionales</string>
+
+    <string name="productos_buscar_placeholder">Buscar producto por nombre…</string>
+    <string name="productos_sin_resultados">No se encontraron productos para esta búsqueda.</string>
+    <string name="productos_categoria_vacia">No hay productos disponibles en esta categoría.</string>
+    <string name="producto_comision_lista">Comisión de lista</string>
+    <string name="producto_frecuencia">Frecuencia de cobro</string>
+    <string name="frecuencia_mensual">Mensual</string>
+    <string name="frecuencia_anual">Anual</string>
+    <string name="frecuencia_por_operacion">Por operación</string>
+    <string name="frecuencia_unica_vez">Única vez</string>
+
+    <string name="producto_detalle_titulo">Detalle de producto</string>
+    <string name="producto_codigo">Código de producto</string>
+    <string name="producto_categoria">Categoría</string>
+    <string name="producto_estado">Estado</string>
+    <string name="calcular_descuento">Calcular descuento</string>
+    <string name="producto_no_disponible">Producto no disponible</string>
+    <string name="producto_no_disponible_desc">Este producto está descontinuado y no permite calcular descuentos.</string>
+    <string name="producto_no_encontrado">No se encontró la información del producto.</string>
+
+    <!-- Módulo 5 · Operaciones Comerciales -->
+    <string name="operaciones_titulo">Mis operaciones</string>
+    <string name="operaciones_subtitulo">Operaciones y puntos de atención asociados a tu cuenta.</string>
+    <string name="operaciones_vacio">No tienes operaciones comerciales registradas.</string>
+    <string name="operacion_codigo">Código de operación</string>
+    <string name="operacion_canal">Canal</string>
+    <string name="operacion_oficina">Oficina</string>
+    <string name="operacion_ciudad">Ciudad</string>
+    <string name="operacion_estado">Estado</string>
+    <string name="operacion_fecha">Fecha</string>
+    <string name="operacion_detalle_titulo">Detalle de operación</string>
+    <string name="operacion_seccion_info">Información de la operación</string>
+    <string name="operacion_descuentos_seccion">Descuentos asociados</string>
+    <string name="operacion_sin_descuentos">Aún no se han calculado descuentos para esta operación.</string>
+    <string name="operacion_ver_pagos">Ver pagos</string>
+    <string name="operacion_no_encontrada">No se encontró la operación solicitada.</string>
+
+    <!-- Canales -->
+    <string name="canal_sucursal">Oficina / Ventanilla</string>
+    <string name="canal_banca_movil">Banca Móvil</string>
+    <string name="canal_web">Banca por Internet</string>
+    <string name="canal_cajero">Cajero Automático</string>
+    <string name="canal_agente">Agente BBVA</string>
+    <string name="canal_desconocido">Otro canal</string>
 </resources>

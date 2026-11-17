@@ -41,6 +41,7 @@ import com.bbva.bonifica.ui.components.BonificaTopBar
 import com.bbva.bonifica.ui.components.EmptyView
 import com.bbva.bonifica.ui.components.ErrorView
 import com.bbva.bonifica.ui.components.LoadingView
+import com.bbva.bonifica.ui.components.PrimaryButton
 import com.bbva.bonifica.ui.components.SecondaryButton
 import com.bbva.bonifica.ui.components.StatusChip
 import com.bbva.bonifica.ui.theme.BbvaGray300
@@ -57,6 +58,8 @@ import com.bbva.bonifica.ui.theme.Warning
 @Composable
 fun PerfilScreen(
     viewModel: PerfilViewModel,
+    onNavigateToCatalogo: () -> Unit = {},
+    onNavigateToOperaciones: () -> Unit = {},
     onLoggedOut: (Role) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -86,6 +89,8 @@ fun PerfilScreen(
             )
             is UiState.Content -> Contenido(
                 customer = current.data,
+                onNavigateToCatalogo = onNavigateToCatalogo,
+                onNavigateToOperaciones = onNavigateToOperaciones,
                 onCloseSession = viewModel::logout,
                 modifier = Modifier.weight(1f)
             )
@@ -96,6 +101,8 @@ fun PerfilScreen(
 @Composable
 private fun Contenido(
     customer: Customer,
+    onNavigateToCatalogo: () -> Unit,
+    onNavigateToOperaciones: () -> Unit,
     onCloseSession: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -162,8 +169,21 @@ private fun Contenido(
         }
 
         Spacer(Modifier.height(24.dp))
-        SecondaryButton(text = stringResource(R.string.cerrar_sesion), onClick = onCloseSession)
-        Spacer(Modifier.height(8.dp))
+        PrimaryButton(
+            text = stringResource(R.string.catalogo_titulo),
+            onClick = onNavigateToCatalogo
+        )
+        Spacer(Modifier.height(12.dp))
+        SecondaryButton(
+            text = stringResource(R.string.operaciones_titulo),
+            onClick = onNavigateToOperaciones
+        )
+        Spacer(Modifier.height(16.dp))
+        SecondaryButton(
+            text = stringResource(R.string.cerrar_sesion),
+            onClick = onCloseSession
+        )
+        Spacer(Modifier.height(16.dp))
     }
 }
 
