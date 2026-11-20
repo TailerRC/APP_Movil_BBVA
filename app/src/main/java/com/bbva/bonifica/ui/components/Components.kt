@@ -2,18 +2,22 @@ package com.bbva.bonifica.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -72,8 +76,8 @@ import com.bbva.bonifica.ui.theme.Success
 import com.bbva.bonifica.ui.theme.Warning
 
 // Componentes reutilizables (diseño §9). Persona A agrega el resto
-// (InfoCard, ProductCard, TimelineItem, RoleGuard...); ConfirmDialog lo aporta
-// el Módulo 3 porque lo necesita para confirmar/anular.
+// (InfoCard, ProductCard, RoleGuard...); ConfirmDialog lo aporta el Módulo 3
+// y TimelineItem + paymentMethodName el Módulo 6.
 
 @Composable
 fun PrimaryButton(
@@ -164,6 +168,15 @@ fun StatusChip(status: String, modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.labelMedium
         )
     }
+}
+
+/** Nombre en español del medio de pago (§6, `PaymentOrder.paymentMethod`). */
+@Composable
+fun paymentMethodName(method: String): String = when (method) {
+    "CARGO_EN_CUENTA" -> stringResource(R.string.pago_cargo_cuenta)
+    "TARJETA_DEBITO" -> stringResource(R.string.pago_tarjeta_debito)
+    "EFECTIVO_VENTANILLA" -> stringResource(R.string.pago_efectivo_ventanilla)
+    else -> method
 }
 
 @Composable
@@ -432,4 +445,89 @@ fun ConfirmDialog(
             }
         }
     )
+}
+
+/**
+ * Punto + línea de la línea de tiempo del historial (§9). El punto se colorea con
+ * `statusColor(status)`; la línea llega hasta el inicio del siguiente elemento y
+ * `isLast` la omite, para que la columna de eventos quede continua.
+ *
+ * La fila usa `IntrinsicSize.Min` para que el punto y la línea midan lo mismo que
+ * el contenido de la derecha (el alto del texto varía por el detalle de cada evento).
+ */
+@Composable
+fun TimelineItem(
+    title: String,
+    timestamp: String,
+    modifier: Modifier = Modifier,
+    status: String? = null,
+    channel: String? = null,
+    detail: String? = null,
+    isLast: Boolean = false
+) {
+    Row(modifier = modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
+        // Punto arriba y línea debajo, centrados en una columna del ancho fijo.
+        Box(
+            modifier = Modifier.width(28.dp).fillMaxHeight(),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            if (!isLast) {
+                Box(
+                    modifier = Modifier
+                        .padding(top = 16.dp) // deja libre el punto (14 dp)
+                        .width(2.dp)
+                        .fillMaxHeight()
+                        .background(BbvaGray300)
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .size(14.dp)
+                    .background(statusColor(status ?: ""), CircleShape)
+            )
+        }
+
+        Column(modifier = Modifier.weight(1f).padding(bottom = 16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = BbvaNavy
+                )
+                if (status != null) {
+                    StatusChip(status = status)
+                }
+            }
+
+            Spacer(Modifier.height(4.dp))
+
+            Text(
+                text = timestamp,
+                style = MaterialTheme.typography.bodySmall,
+                color = BbvaGray700
+            )
+
+            channel?.let {
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = BbvaGray700
+                )
+            }
+
+            detail?.let {
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = BbvaNavy
+                )
+            }
+        }
+    }
 }

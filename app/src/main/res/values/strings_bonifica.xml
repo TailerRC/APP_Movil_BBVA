@@ -53,6 +53,7 @@
     <string name="perfil_seccion_accesos">Accesos rápidos</string>
     <string name="perfil_catalogo_desc">Tarifas y comisiones de tus productos</string>
     <string name="perfil_operaciones_desc">Tus operaciones y puntos de atención</string>
+    <string name="perfil_promociones_desc">Políticas y campañas vigentes</string>
     <string name="cerrar_sesion">Cerrar sesión</string>
 
     <!-- Módulo 2 · Catálogo de Comisiones -->
@@ -151,4 +152,59 @@
     <string name="canal_cajero">Cajero Automático</string>
     <string name="canal_agente">Agente BBVA</string>
     <string name="canal_desconocido">Otro canal</string>
+
+    <!-- Módulo 4 · Promociones -->
+    <string name="promo_titulo">Promociones</string>
+    <string name="promo_tab_politicas">Políticas</string>
+    <string name="promo_tab_campanas">Campañas</string>
+    <string name="promo_filtro_categoria">Categoría</string>
+    <string name="promo_filtro_moneda">Moneda</string>
+    <string name="promo_filtro_canal">Canal</string>
+    <string name="filtro_todas">Todas</string>
+    <string name="filtro_todos">Todos</string>
+    <string name="promo_alcance">Alcance</string>
+    <string name="promo_alcance_todo">Todos los productos</string>
+    <string name="promo_alcance_categoria">Categoría</string>
+    <string name="promo_alcance_producto">Producto</string>
+    <string name="promo_minimo">Monto mínimo</string>
+    <string name="promo_sin_minimo">Sin monto mínimo</string>
+    <string name="promo_vigencia">Vigencia</string>
+    <string name="promo_segmento">Segmento</string>
+    <string name="promo_politicas_vacias">No hay políticas vigentes para mostrar.</string>
+    <string name="promo_politicas_sin_resultados">No hay promociones que coincidan con los filtros seleccionados.</string>
+    <string name="promo_campanas_vacias">No hay campañas con este estado.</string>
+    <string name="promo_estado_campana">Estado de la campaña</string>
+    <string name="campana_estado_activas">Activas</string>
+    <string name="campana_estado_programadas">Programadas</string>
+    <string name="campana_estado_finalizadas">Finalizadas</string>
+    <string name="campana_estado_pausadas">Pausadas</string>
+    <string name="segmento_personal">Personal</string>
+    <string name="segmento_preferente">Preferente</string>
+    <string name="segmento_premium">Premium</string>
+    <string name="segmento_joven">Joven</string>
+    <string name="segmento_pyme">PyME</string>
+    <string name="segmento_todos">Todos los segmentos</string>
+
+    <!-- Módulo 6 · Pagos e Historial -->
+    <string name="pagos_titulo">Pagos</string>
+    <string name="pagos_subtitulo">Pagos generados por los descuentos de esta operación.</string>
+    <string name="pagos_vacio">Aún no hay pagos registrados para esta operación.</string>
+    <string name="pago_medio">Medio de pago</string>
+    <string name="pago_fecha">Fecha de pago</string>
+
+    <string name="comprobante_titulo">Comprobante</string>
+    <string name="comprobante_recibo">Comprobante de pago</string>
+    <string name="comprobante_monto">Importe pagado</string>
+    <string name="comprobante_moneda">Moneda</string>
+    <string name="comprobante_estado">Estado</string>
+    <string name="comprobante_descuento">Descuento asociado</string>
+    <string name="comprobante_ver_historial">Ver historial</string>
+    <string name="comprobante_no_encontrado">No se encontró el pago solicitado.</string>
+
+    <string name="historial_titulo">Historial</string>
+    <string name="historial_subtitulo">Línea de tiempo del descuento</string>
+    <string name="historial_vacio">Aún no hay eventos registrados para este descuento.</string>
+    <string name="historial_iniciado">Descuento iniciado</string>
+    <string name="historial_confirmado">Descuento confirmado</string>
+    <string name="historial_anulado">Descuento anulado</string>
 </resources>

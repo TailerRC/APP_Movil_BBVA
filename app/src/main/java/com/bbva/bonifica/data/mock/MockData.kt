@@ -130,6 +130,53 @@ object MockData {
             discountValue = 5.0, scope = "ALL", scopeReference = "*",
             minimumAmount = 0.0, currency = "PEN", channel = "BRANCH",
             validFrom = "2026-01-01", validTo = "2026-12-31", status = "ACTIVE"
+        ),
+        // Módulo 4: vencida (§12). El repositorio la devuelve porque sigue ACTIVE,
+        // pero Promociones la oculta porque `validTo` ya pasó.
+        Policy(
+            policyId = "POL-018", name = "10% en cuentas 2025", discountType = "PERCENTAGE",
+            discountValue = 10.0, scope = "CATEGORY", scopeReference = "CUENTAS",
+            minimumAmount = 0.0, currency = "PEN", channel = "ALL",
+            validFrom = "2025-01-01", validTo = "2025-12-31", status = "ACTIVE"
+        ),
+        // Módulo 4: no activa; getActivePolicies (ruta 6) debe excluirla.
+        Policy(
+            policyId = "POL-030", name = "15% piloto interno", discountType = "PERCENTAGE",
+            discountValue = 15.0, scope = "ALL", scopeReference = "*",
+            minimumAmount = 0.0, currency = "PEN", channel = "ALL",
+            validFrom = "2026-01-01", validTo = "2026-12-31", status = "INACTIVE"
+        )
+    )
+
+    /**
+     * Campañas sembradas (§14, Módulo 4): cubren los cuatro estados del selector
+     * de la pestaña Campañas (ACTIVE por defecto, SCHEDULED, FINISHED, PAUSED).
+     */
+    val campaigns = listOf(
+        Campaign(
+            campaignId = "CMP-001", policyId = "POL-022", name = "Verano sin comisiones en tarjetas",
+            targetSegment = "PERSONAL", channel = "MOBILE_APP", budget = 50000.0, currency = "PEN",
+            startDate = "2026-01-15", endDate = "2026-12-31", status = "ACTIVE"
+        ),
+        Campaign(
+            campaignId = "CMP-005", policyId = "POL-022", name = "Jóvenes digitales",
+            targetSegment = "JOVEN", channel = "MOBILE_APP", budget = 15000.0, currency = "PEN",
+            startDate = "2026-03-01", endDate = "2026-09-30", status = "ACTIVE"
+        ),
+        Campaign(
+            campaignId = "CMP-002", policyId = "POL-025", name = "Transferencias por web con 5%",
+            targetSegment = "PREFERENTE", channel = "WEB", budget = 20000.0, currency = "PEN",
+            startDate = "2026-12-01", endDate = "2027-03-31", status = "SCHEDULED"
+        ),
+        Campaign(
+            campaignId = "CMP-003", policyId = "POL-022", name = "Black Friday de comisiones",
+            targetSegment = "PREMIUM", channel = "ALL", budget = 80000.0, currency = "PEN",
+            startDate = "2025-11-20", endDate = "2025-12-01", status = "FINISHED"
+        ),
+        Campaign(
+            campaignId = "CMP-004", policyId = "POL-025", name = "Piloto en agencias",
+            targetSegment = "PYME", channel = "AGENT", budget = 10000.0, currency = "PEN",
+            startDate = "2026-02-01", endDate = "2026-06-30", status = "PAUSED"
         )
     )
 

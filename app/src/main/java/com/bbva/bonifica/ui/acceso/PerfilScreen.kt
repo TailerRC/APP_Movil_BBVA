@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.outlined.ListAlt
 import androidx.compose.material.icons.automirrored.outlined.Logout
+import androidx.compose.material.icons.outlined.LocalOffer
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Receipt
 import androidx.compose.material.icons.outlined.Warning
@@ -80,6 +81,7 @@ fun PerfilScreen(
     viewModel: PerfilViewModel,
     onNavigateToCatalogo: () -> Unit = {},
     onNavigateToOperaciones: () -> Unit = {},
+    onNavigateToPromociones: () -> Unit = {},
     onLoggedOut: (Role) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -111,6 +113,7 @@ fun PerfilScreen(
                 customer = current.data,
                 onNavigateToCatalogo = onNavigateToCatalogo,
                 onNavigateToOperaciones = onNavigateToOperaciones,
+                onNavigateToPromociones = onNavigateToPromociones,
                 onCloseSession = viewModel::logout,
                 modifier = Modifier.weight(1f)
             )
@@ -123,6 +126,7 @@ private fun Contenido(
     customer: Customer,
     onNavigateToCatalogo: () -> Unit,
     onNavigateToOperaciones: () -> Unit,
+    onNavigateToPromociones: () -> Unit,
     onCloseSession: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -197,6 +201,13 @@ private fun Contenido(
                 title = stringResource(R.string.operaciones_titulo),
                 subtitle = stringResource(R.string.perfil_operaciones_desc),
                 onClick = onNavigateToOperaciones,
+                conDivisor = true
+            )
+            AccionFila(
+                icon = Icons.Outlined.LocalOffer,
+                title = stringResource(R.string.promo_titulo),
+                subtitle = stringResource(R.string.perfil_promociones_desc),
+                onClick = onNavigateToPromociones,
                 conDivisor = false
             )
         }

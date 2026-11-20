@@ -48,6 +48,7 @@ import com.bbva.bonifica.ui.components.LoadingView
 import com.bbva.bonifica.ui.components.PrimaryButton
 import com.bbva.bonifica.ui.components.SecondaryButton
 import com.bbva.bonifica.ui.components.StatusChip
+import com.bbva.bonifica.ui.components.paymentMethodName
 import com.bbva.bonifica.ui.theme.BbvaBlue
 import com.bbva.bonifica.ui.theme.BbvaGray300
 import com.bbva.bonifica.ui.theme.BbvaGray700
@@ -355,17 +356,9 @@ private fun MedioPagoFila(
         )
         Spacer(Modifier.width(8.dp))
         Text(
-            text = medioPagoNombre(method),
+            text = paymentMethodName(method),
             style = MaterialTheme.typography.bodyLarge,
             color = BbvaNavy
         )
     }
-}
-
-@Composable
-private fun medioPagoNombre(method: String): String = when (method) {
-    "CARGO_EN_CUENTA" -> stringResource(R.string.pago_cargo_cuenta)
-    "TARJETA_DEBITO" -> stringResource(R.string.pago_tarjeta_debito)
-    "EFECTIVO_VENTANILLA" -> stringResource(R.string.pago_efectivo_ventanilla)
-    else -> method
 }

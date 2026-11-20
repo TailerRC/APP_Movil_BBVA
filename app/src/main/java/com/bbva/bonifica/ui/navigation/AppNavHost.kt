@@ -38,6 +38,14 @@ import com.bbva.bonifica.ui.operaciones.OperacionDetalleScreen
 import com.bbva.bonifica.ui.operaciones.OperacionDetalleViewModel
 import com.bbva.bonifica.ui.operaciones.OperacionesScreen
 import com.bbva.bonifica.ui.operaciones.OperacionesViewModel
+import com.bbva.bonifica.ui.pagos.ComprobanteScreen
+import com.bbva.bonifica.ui.pagos.ComprobanteViewModel
+import com.bbva.bonifica.ui.pagos.HistorialScreen
+import com.bbva.bonifica.ui.pagos.HistorialViewModel
+import com.bbva.bonifica.ui.pagos.PagosScreen
+import com.bbva.bonifica.ui.pagos.PagosViewModel
+import com.bbva.bonifica.ui.promociones.PromocionesScreen
+import com.bbva.bonifica.ui.promociones.PromocionesViewModel
 
 /** Pantalla vacía. Cada persona la reemplaza por su pantalla real en su rama. */
 @Composable
@@ -139,6 +147,7 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                 viewModel = viewModel,
                 onNavigateToCatalogo = { navController.navigate(Routes.CATALOGO) },
                 onNavigateToOperaciones = { navController.navigate(Routes.OPERACIONES) },
+                onNavigateToPromociones = { navController.navigate(Routes.PROMOCIONES) },
                 onLoggedOut = { role ->
                     acceso.reset()
                     navController.leaveSession(role)
@@ -284,12 +293,63 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         }
 
         // Módulo 6 · Pagos e Historial (Persona E)
-        composable(Routes.PAGOS) { Placeholder("Pagos de la operación") }
-        composable(Routes.COMPROBANTE) { Placeholder("Comprobante") }
-        composable(Routes.HISTORIAL) { Placeholder("Historial") }
+        composable(
+            route = Routes.PAGOS,
+            arguments = listOf(navArgument("posRef") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val posRef = backStackEntry.arguments?.getString("posRef").orEmpty()
+            val viewModel: PagosViewModel = viewModel(
+                key = "pagos_$posRef",
+                factory = rememberAppFactory { PagosViewModel(posRef, it.paymentRepository) }
+            )
+            PagosScreen(
+                viewModel = viewModel,
+                onPagoSelected = { payId -> navController.navigate(Routes.comprobante(payId)) },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = Routes.COMPROBANTE,
+            arguments = listOf(navArgument("payId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val payId = backStackEntry.arguments?.getString("payId").orEmpty()
+            val viewModel: ComprobanteViewModel = viewModel(
+                key = "comprobante_$payId",
+                factory = rememberAppFactory { ComprobanteViewModel(payId, it.paymentRepository) }
+            )
+            ComprobanteScreen(
+                viewModel = viewModel,
+                onVerHistorial = { dpId -> navController.navigate(Routes.historial(dpId)) },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = Routes.HISTORIAL,
+            arguments = listOf(navArgument("dpId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val dpId = backStackEntry.arguments?.getString("dpId").orEmpty()
+            val viewModel: HistorialViewModel = viewModel(
+                key = "historial_$dpId",
+                factory = rememberAppFactory { HistorialViewModel(dpId, it.paymentRepository) }
+            )
+            HistorialScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
 
         // Módulo 4 · Promociones (Persona E)
-        composable(Routes.PROMOCIONES) { Placeholder("Promociones") }
+        composable(Routes.PROMOCIONES) {
+            val viewModel: PromocionesViewModel = viewModel(
+                factory = rememberAppFactory { PromocionesViewModel(it.promotionRepository) }
+            )
+            PromocionesScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
 
         // Módulo 7 · Panel de Negocio (Persona F)
         composable(Routes.NEGOCIO_CONSULTA) { Placeholder("Consultar cliente") }
