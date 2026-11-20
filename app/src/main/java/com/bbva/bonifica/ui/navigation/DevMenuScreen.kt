@@ -24,9 +24,9 @@ fun DevMenuScreen(onNavigate: (String) -> Unit) {
         Routes.LOGIN, Routes.NEW_PASSWORD, Routes.HOME_CLIENTE, Routes.CATALOGO,
         Routes.catalogoCategoria("TARJETAS"), Routes.producto("PROD-0025"),
         Routes.OPERACIONES, Routes.operacion("SALE-SEED-0001"),
-        Routes.calcular("SALE-SEED-0001", "PROD-0025"), Routes.resultado("DP-EJEMPLO"),
-        Routes.pagos("SALE-SEED-0001"), Routes.comprobante("PAY-EJEMPLO"),
-        Routes.historial("DP-EJEMPLO"), Routes.PROMOCIONES, Routes.NEGOCIO_CONSULTA,
+        Routes.calcular("SALE-SEED-0001", "PROD-0025"), Routes.resultado("DP-0001"),
+        Routes.pagos("SALE-SEED-0001"), Routes.comprobante("PAY-0001"),
+        Routes.historial("DP-0001"), Routes.PROMOCIONES, Routes.NEGOCIO_CONSULTA,
         Routes.negocioCliente("PARTY-000024"), Routes.NEGOCIO_POLITICA
     )
     LazyColumn(
