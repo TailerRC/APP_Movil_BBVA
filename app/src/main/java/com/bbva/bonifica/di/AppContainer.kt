@@ -23,7 +23,7 @@ class AppContainer(context: Context) {
         error("Implementación Remote pendiente (ver §16 del diseño). Usa USE_MOCK = true.")
 
     val authRepository: AuthRepository = pick(FakeAuthRepository(sessionManager)) { remotePendiente() }
-    val customerRepository: CustomerRepository = pick(FakeCustomerRepository()) { remotePendiente() }
+    val customerRepository: CustomerRepository = pick(FakeCustomerRepository(sessionManager::current)) { remotePendiente() }
     val catalogRepository: CatalogRepository = pick(FakeCatalogRepository()) { remotePendiente() }
     val operationRepository: OperationRepository = pick(FakeOperationRepository()) { remotePendiente() }
     val discountRepository: DiscountRepository = pick(FakeDiscountRepository()) { remotePendiente() }
