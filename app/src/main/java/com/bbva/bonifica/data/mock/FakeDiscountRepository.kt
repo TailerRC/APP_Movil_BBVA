@@ -100,7 +100,7 @@ class FakeDiscountRepository(
         val current = MockStore.discounts[index]
         // Solo se actúa sobre INITIATED: repetir da 409 (§12, §17).
         if (current.status != "INITIATED") {
-            return AppResult.Failure(AppError.Conflict)
+            return AppResult.Failure(AppError.Conflict())
         }
 
         val updated = if (status == "APPLIED") {

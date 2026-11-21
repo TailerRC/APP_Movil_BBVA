@@ -8,6 +8,16 @@ import androidx.lifecycle.ViewModelProvider
 import com.bbva.bonifica.BonificaApp
 
 /**
+ * Contenedor de la app (DI manual, §4.5) accesible desde cualquier composable.
+ * `AppNavHost` lo usa para leer el rol de la sesión que publica en `LocalRole`.
+ */
+@Composable
+fun rememberAppContainer(): AppContainer {
+    val context = LocalContext.current
+    return remember(context) { (context.applicationContext as BonificaApp).container }
+}
+
+/**
  * Factory manual sin Hilt (§4.5): cada ViewModel pide sus repositorios a
  * [AppContainer] con una `ViewModelProvider.Factory`.
  *
@@ -15,9 +25,8 @@ import com.bbva.bonifica.BonificaApp
  */
 @Composable
 fun <VM : ViewModel> rememberAppFactory(create: (AppContainer) -> VM): ViewModelProvider.Factory {
-    val context = LocalContext.current
-    return remember(context, create) {
-        val container = (context.applicationContext as BonificaApp).container
+    val container = rememberAppContainer()
+    return remember(container, create) {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T = create(container) as T

@@ -1,12 +1,7 @@
 package com.bbva.bonifica.ui.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -34,6 +29,12 @@ import com.bbva.bonifica.ui.descuentos.CalcularScreen
 import com.bbva.bonifica.ui.descuentos.CalcularViewModel
 import com.bbva.bonifica.ui.descuentos.ResultadoScreen
 import com.bbva.bonifica.ui.descuentos.ResultadoViewModel
+import com.bbva.bonifica.ui.negocio.ClienteNegocioScreen
+import com.bbva.bonifica.ui.negocio.ClienteNegocioViewModel
+import com.bbva.bonifica.ui.negocio.ConsultaClienteScreen
+import com.bbva.bonifica.ui.negocio.ConsultaClienteViewModel
+import com.bbva.bonifica.ui.negocio.RegistrarPoliticaScreen
+import com.bbva.bonifica.ui.negocio.RegistrarPoliticaViewModel
 import com.bbva.bonifica.ui.operaciones.OperacionDetalleScreen
 import com.bbva.bonifica.ui.operaciones.OperacionDetalleViewModel
 import com.bbva.bonifica.ui.operaciones.OperacionesScreen
@@ -46,14 +47,6 @@ import com.bbva.bonifica.ui.pagos.PagosScreen
 import com.bbva.bonifica.ui.pagos.PagosViewModel
 import com.bbva.bonifica.ui.promociones.PromocionesScreen
 import com.bbva.bonifica.ui.promociones.PromocionesViewModel
-
-/** Pantalla vacía. Cada persona la reemplaza por su pantalla real en su rama. */
-@Composable
-private fun Placeholder(nombre: String) {
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(nombre)
-    }
-}
 
 /** Destino inicial según el rol (§11.2): el rol sale solo del token. */
 private fun homeRoute(role: Role): String =
@@ -352,8 +345,45 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         }
 
         // Módulo 7 · Panel de Negocio (Persona F)
-        composable(Routes.NEGOCIO_CONSULTA) { Placeholder("Consultar cliente") }
-        composable(Routes.NEGOCIO_CLIENTE) { Placeholder("Ficha de cliente") }
-        composable(Routes.NEGOCIO_POLITICA) { Placeholder("Registrar política") }
+        composable(Routes.NEGOCIO_CONSULTA) {
+            val viewModel: ConsultaClienteViewModel = viewModel(
+                factory = rememberAppFactory { ConsultaClienteViewModel(it.customerRepository) }
+            )
+            ConsultaClienteScreen(
+                viewModel = viewModel,
+                onClienteSelected = { ref -> navController.navigate(Routes.negocioCliente(ref)) },
+                onOperacionSelected = { ref -> navController.navigate(Routes.operacion(ref)) },
+                onBack = if (navController.previousBackStackEntry != null) {
+                    { navController.popBackStack() }
+                } else null
+            )
+        }
+
+        composable(
+            route = Routes.NEGOCIO_CLIENTE,
+            arguments = listOf(navArgument("ref") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val ref = backStackEntry.arguments?.getString("ref").orEmpty()
+            val viewModel: ClienteNegocioViewModel = viewModel(
+                key = "negocio_cliente_$ref",
+                factory = rememberAppFactory { ClienteNegocioViewModel(ref, it.customerRepository) }
+            )
+            ClienteNegocioScreen(
+                viewModel = viewModel,
+                onOperacionSelected = { opRef -> navController.navigate(Routes.operacion(opRef)) },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Routes.NEGOCIO_POLITICA) {
+            val viewModel: RegistrarPoliticaViewModel = viewModel(
+                factory = rememberAppFactory { RegistrarPoliticaViewModel(it.adminRepository) }
+            )
+            RegistrarPoliticaScreen(
+                viewModel = viewModel,
+                onRegistered = { navController.popBackStack() },
+                onBack = { navController.popBackStack() }
+            )
+        }
     }
 }

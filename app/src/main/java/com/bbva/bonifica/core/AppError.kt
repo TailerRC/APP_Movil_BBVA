@@ -5,7 +5,11 @@ sealed class AppError {
     data object Unauthorized : AppError()
     data class Forbidden(val msg: String = "") : AppError()
     data class NotFound(val detail: String = "") : AppError()
-    data object Conflict : AppError()
+    /**
+     * 409. `msg` da el motivo concreto: el descuento ya procesado (§8.4) o la
+     * política que ya existe (§12, Módulo 7); el texto por defecto es el de §8.4.
+     */
+    data class Conflict(val msg: String = "Este descuento ya fue confirmado o anulado") : AppError()
     data object Server : AppError()
     data object Network : AppError()
     /** Credenciales rechazadas por Cognito (§5): no distingue usuario inexistente de contraseña errónea. */
@@ -20,7 +24,7 @@ fun AppError.toMessage(): String = when (this) {
     AppError.Unauthorized -> "Tu sesión venció"
     is AppError.Forbidden -> "No tienes permiso: solo puedes consultar tus propios datos"
     is AppError.NotFound -> if (detail.isBlank()) "No se encontró el recurso" else "No se encontró $detail"
-    AppError.Conflict -> "Este descuento ya fue confirmado o anulado"
+    is AppError.Conflict -> msg
     AppError.Server -> "Error interno. Intenta más tarde"
     AppError.Network -> "Sin conexión a internet"
     AppError.InvalidCredentials -> "Correo o contraseña incorrectos"

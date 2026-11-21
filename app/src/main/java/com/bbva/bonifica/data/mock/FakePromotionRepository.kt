@@ -11,12 +11,15 @@ import kotlinx.coroutines.delay
  *
  * La ruta 6 devuelve solo políticas `ACTIVE`; ocultar las vencidas (`validTo` < hoy)
  * es regla de pantalla (§12), no del repositorio. La ruta 7 filtra por `status`.
+ *
+ * Las políticas se leen de [MockStore.policies] (semillas + las que registra el
+ * Módulo 7 por la ruta 5) para que una política nueva aparezca en Promociones.
  */
 class FakePromotionRepository : PromotionRepository {
 
     override suspend fun getActivePolicies(): AppResult<List<Policy>> {
         delay(500)
-        return AppResult.Success(MockData.policies.filter { it.status == "ACTIVE" })
+        return AppResult.Success(MockStore.policies.filter { it.status == "ACTIVE" })
     }
 
     override suspend fun getCampaigns(status: String): AppResult<List<Campaign>> {

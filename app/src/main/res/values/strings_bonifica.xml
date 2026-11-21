@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Textos visibles de BBVA Bonifica. Todo texto de pantalla va en strings.xml (o aquí). app_name sigue en strings.xml -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="reintentar">Reintentar</string>
     <string name="volver">Volver</string>
     <string name="logo_bbva" translatable="false">BBVA</string>
@@ -207,4 +207,63 @@
     <string name="historial_iniciado">Descuento iniciado</string>
     <string name="historial_confirmado">Descuento confirmado</string>
     <string name="historial_anulado">Descuento anulado</string>
+
+    <!-- Módulo 7 · Panel de Negocio y RoleGuard -->
+    <string name="rol_seccion_restringida">Esta sección es solo para personal de negocio.</string>
+
+    <string name="negocio_consulta_titulo">Consultar cliente</string>
+    <string name="negocio_codigo_cliente">Código de cliente</string>
+    <string name="negocio_codigo_placeholder">PARTY-000024</string>
+    <string name="negocio_codigo_requerido">Escribe el código del cliente</string>
+    <string name="negocio_codigo_formato">El código empieza con PARTY-, por ejemplo PARTY-000024</string>
+    <string name="negocio_buscar">Consultar</string>
+    <string name="negocio_buscar_cargando">Buscando…</string>
+    <string name="negocio_consulta_vacio">Escribe el código de un cliente para ver su ficha y sus operaciones.</string>
+    <string name="negocio_ver_ficha">Ver ficha del cliente</string>
+    <string name="negocio_operaciones_seccion">Operaciones del cliente (%1$d)</string>
+    <string name="negocio_cliente_sin_operaciones">Este cliente no tiene operaciones registradas.</string>
+
+    <string name="negocio_cliente_titulo">Ficha de cliente</string>
+    <string name="negocio_cliente_seccion_datos">Datos del cliente</string>
+    <string name="negocio_cliente_no_encontrado">Cliente no encontrado</string>
+    <string name="negocio_cliente_inactivo">Este cliente está inactivo.</string>
+
+    <string name="negocio_politica_titulo">Registrar política</string>
+    <string name="politica_seccion_identificacion">Identificación</string>
+    <string name="politica_seccion_descuento">Descuento</string>
+    <string name="politica_seccion_aplicacion">Aplicación</string>
+    <string name="politica_seccion_vigencia">Vigencia</string>
+    <string name="politica_codigo">Código de la política</string>
+    <string name="politica_codigo_ejemplo">POL-100</string>
+    <string name="politica_codigo_requerido">Escribe el código de la política</string>
+    <string name="politica_codigo_formato">Usa el formato POL-### (tres dígitos)</string>
+    <string name="politica_nombre">Nombre</string>
+    <string name="politica_nombre_ejemplo" formatted="false">10% en tarjetas</string>
+    <string name="politica_nombre_requerido">Escribe el nombre de la política</string>
+    <string name="politica_tipo">Tipo de descuento</string>
+    <string name="politica_tipo_porcentaje">Porcentaje</string>
+    <string name="politica_tipo_fijo">Monto fijo</string>
+    <string name="politica_valor">Valor del descuento</string>
+    <string name="politica_valor_placeholder">10</string>
+    <string name="politica_valor_ayuda">Porcentaje entre 1 y 100, o el monto a descontar.</string>
+    <string name="politica_valor_requerido">Escribe el valor del descuento</string>
+    <string name="politica_valor_formato">Escribe un número válido, por ejemplo 10</string>
+    <string name="politica_valor_rango">Usa un valor mayor que 0 (y hasta 100 si es porcentaje)</string>
+    <string name="politica_referencia">Referencia</string>
+    <string name="politica_referencia_categoria">TARJETAS</string>
+    <string name="politica_referencia_producto">PROD-0025</string>
+    <string name="politica_referencia_requerida">Escribe la categoría o el producto al que aplica</string>
+    <string name="politica_minimo_placeholder">0</string>
+    <string name="politica_minimo_ayuda">Opcional. Déjalo en blanco si no hay monto mínimo.</string>
+    <string name="politica_minimo_formato">Escribe un monto mínimo válido</string>
+    <string name="politica_minimo_rango">El monto mínimo no puede ser negativo</string>
+    <string name="politica_desde">Vigente desde</string>
+    <string name="politica_hasta">Vigente hasta</string>
+    <string name="politica_fecha_placeholder">AAAA-MM-DD</string>
+    <string name="politica_fecha_requerido">Escribe la fecha</string>
+    <string name="politica_fecha_formato" tools:ignore="TypographyDashes">Usa el formato AAAA-MM-DD, por ejemplo 2026-01-01</string>
+    <string name="politica_fecha_orden">La fecha final debe ser posterior a la inicial</string>
+    <string name="politica_registrar">Registrar política</string>
+    <string name="politica_registrando">Registrando…</string>
+    <string name="politica_registrada">Política registrada correctamente.</string>
 </resources>

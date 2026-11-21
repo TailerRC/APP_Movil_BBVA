@@ -45,6 +45,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,6 +65,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bbva.bonifica.R
 import com.bbva.bonifica.core.formatMoney
+import com.bbva.bonifica.domain.model.Role
 import com.bbva.bonifica.ui.theme.BbvaBlue
 import com.bbva.bonifica.ui.theme.BbvaBlueLight
 import com.bbva.bonifica.ui.theme.BbvaGray300
@@ -76,8 +78,8 @@ import com.bbva.bonifica.ui.theme.Success
 import com.bbva.bonifica.ui.theme.Warning
 
 // Componentes reutilizables (diseño §9). Persona A agrega el resto
-// (InfoCard, ProductCard, RoleGuard...); ConfirmDialog lo aporta el Módulo 3
-// y TimelineItem + paymentMethodName el Módulo 6.
+// (InfoCard, ProductCard...); ConfirmDialog lo aporta el Módulo 3,
+// TimelineItem + paymentMethodName el Módulo 6 y RoleGuard el Módulo 7.
 
 @Composable
 fun PrimaryButton(
@@ -529,5 +531,51 @@ fun TimelineItem(
                 )
             }
         }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Control de acceso por rol (§9, §11.2) — Módulo 7
+// ---------------------------------------------------------------------------
+
+/**
+ * Rol de la sesión activa (claim `cognito:groups`), disponible para cualquier
+ * composable. Lo publica `AppNavHost` y se relee en cada cambio de pila: el rol
+ * solo cambia al iniciar o cerrar sesión, y ambos navegan a otro destino.
+ */
+val LocalRole = staticCompositionLocalOf<Role?> { null }
+
+/**
+ * Muestra [content] solo si la sesión tiene el [role] indicado; si no, muestra
+ * [fallback] (por defecto, el aviso estándar de §9).
+ *
+ * Es la doble protección de §11.2 junto al 403 de la API: oculta el panel de
+ * negocio a un usuario `cliente` aunque llegue a la ruta por la fuerza.
+ *
+ * Uso: `RoleGuard(role = Role.NEGOCIO, modifier = Modifier.weight(1f)) { … }`.
+ * El [modifier] permite situarlo dentro de un `Column` (p. ej. con `weight`),
+ * porque el contenido ya no vive directamente en ese scope.
+ */
+@Composable
+fun RoleGuard(
+    role: Role,
+    modifier: Modifier = Modifier,
+    fallback: @Composable () -> Unit = { RoleDeniedView() },
+    content: @Composable () -> Unit
+) {
+    Box(modifier = modifier) {
+        if (LocalRole.current == role) content() else fallback()
+    }
+}
+
+/** Aviso estándar cuando el rol no permite ver el contenido (§9). */
+@Composable
+fun RoleDeniedView(modifier: Modifier = Modifier) {
+    Box(modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
+        Text(
+            text = stringResource(R.string.rol_seccion_restringida),
+            textAlign = TextAlign.Center,
+            color = BbvaGray700
+        )
     }
 }
