@@ -1,13 +1,17 @@
 package com.bbva.bonifica.ui.navigation
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.bbva.bonifica.di.rememberAppFactory
@@ -25,6 +29,7 @@ import com.bbva.bonifica.ui.catalogo.ProductoDetalleScreen
 import com.bbva.bonifica.ui.catalogo.ProductoDetalleViewModel
 import com.bbva.bonifica.ui.catalogo.ProductosScreen
 import com.bbva.bonifica.ui.catalogo.ProductosViewModel
+import com.bbva.bonifica.ui.components.LocalRole
 import com.bbva.bonifica.ui.descuentos.CalcularScreen
 import com.bbva.bonifica.ui.descuentos.CalcularViewModel
 import com.bbva.bonifica.ui.descuentos.ResultadoScreen
@@ -84,7 +89,50 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         factory = rememberAppFactory { AccesoViewModel(it.authRepository) }
     )
 
-    NavHost(navController = navController, startDestination = Routes.SPLASH) {
+    // §11.2 · Barra inferior por rol: el rol sale solo del claim (LocalRole) y
+    // la ruta actual decide si es una sección. Sin ella el home de negocio
+    // (negocio_consulta) era un callejón sin salida.
+    val role = LocalRole.current
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
+
+    Column(Modifier.fillMaxSize()) {
+        BonificaNavHost(
+            navController = navController,
+            acceso = acceso,
+            modifier = Modifier.weight(1f)
+        )
+
+        if (role != null && barraInferiorVisible(role, currentRoute)) {
+            RoleBottomBar(
+                role = role,
+                currentRoute = currentRoute,
+                onNavigate = { route ->
+                    // Patrón de secciones (§11.2): la pestaña deja el home debajo
+                    // y descarta lo que había encima; saveState/restoreState
+                    // conservan el estado de la pestaña abandonada.
+                    navController.navigate(route) {
+                        popUpTo(homeRoute(role)) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            )
+        }
+    }
+}
+
+/**
+ * El grafo de destinos, sin barra: [AppNavHost] lo monta dentro de la `Column`
+ * que la lleva, para que el NavHost reparta el alto con ella (`weight`).
+ */
+@Composable
+private fun BonificaNavHost(
+    navController: NavHostController,
+    acceso: AccesoViewModel,
+    modifier: Modifier = Modifier
+) {
+    NavHost(navController = navController, startDestination = Routes.SPLASH, modifier = modifier) {
 
         // Módulo 1 · Acceso y Perfil (Persona B)
         composable(Routes.SPLASH) {
@@ -105,7 +153,12 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         }
 
         // Menú temporal de desarrollo (§14). Mantener pulsado el logo del splash.
-        composable(Routes.DEV_MENU) { DevMenuScreen(onNavigate = { navController.navigate(it) }) }
+        composable(Routes.DEV_MENU) {
+            DevMenuScreen(
+                onNavigate = { navController.navigate(it) },
+                onBack = { navController.popBackStack() }
+            )
+        }
 
         composable(Routes.LOGIN) {
             LoginScreen(

@@ -266,4 +266,16 @@
     <string name="politica_registrar">Registrar política</string>
     <string name="politica_registrando">Registrando…</string>
     <string name="politica_registrada">Política registrada correctamente.</string>
+
+    <!-- Barras inferiores por rol (§11.2) -->
+    <string name="tab_inicio">Inicio</string>
+    <string name="tab_catalogo">Catálogo</string>
+    <string name="tab_operaciones">Operaciones</string>
+    <string name="tab_promociones">Promociones</string>
+    <string name="tab_consultar_cliente">Consultar cliente</string>
+    <string name="tab_registrar_politica">Registrar política</string>
+
+    <!-- Menú de desarrollo (§14): temporal, se retira con el flujo completo -->
+    <string name="dev_menu_titulo">Menú de desarrollo</string>
+    <string name="dev_menu_subtitulo">Atajos a todas las pantallas (reemplazar por Splash)</string>
 </resources>
