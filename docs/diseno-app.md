@@ -505,7 +505,9 @@ Toda lista debe resolver los 4 estados (cargando, con datos, vacía, error con *
 ### 11.2 Barras inferiores por rol
 
 - **Cliente:** `Inicio` · `Catálogo` · `Operaciones` · `Promociones`
-- **Negocio:** `Consultar cliente` · `Registrar política` · `Promociones` · `Catálogo`
+- **Negocio:** `Clientes` · `Políticas` · `Promociones` · `Catálogo`
+  - `Clientes` = *Consultar cliente* (rutas `negocio_consulta` / `negocio_cliente` / `operacion`); `Políticas` = *Registrar política* (`negocio_politica`). Los títulos de pantalla siguen siendo largos; **solo se acortan las etiquetas de la barra**.
+  - **Reglas de la barra:** máximo **una línea** por etiqueta (si una se parte en dos, Material3 recoloca el ícono y la barra queda descuadrada) y texto centrado. Si una etiqueta no cabe, se corta con puntos. No añadir una quinta pestaña: con 5 × ~84 dp ya no cabe una etiqueta de una línea.
 
 El rol sale **solo** del claim `cognito:groups`. Tras el login: `cliente` → `home_cliente`; `negocio` → `negocio_consulta`. `RoleGuard` + el 403 de la API son doble protección.
 

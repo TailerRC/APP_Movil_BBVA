@@ -21,6 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import com.bbva.bonifica.R
 import com.bbva.bonifica.domain.model.Role
 import com.bbva.bonifica.ui.theme.BbvaBlue
@@ -119,7 +121,18 @@ fun RoleBottomBar(
                             contentDescription = null
                         )
                     },
-                    label = { Text(stringResource(tab.labelRes)) },
+                    // Una sola línea SIEMPRE: placeLabelAndIcon() calcula la
+                    // altura del ícono a partir de la de la etiqueta, así que si
+                    // una se parte en dos sus íconos suben 8 dp y la barra queda
+                    // descuadrada. Si no cabe, se corta con puntos.
+                    label = {
+                        Text(
+                            text = stringResource(tab.labelRes),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            textAlign = TextAlign.Center
+                        )
+                    },
                     alwaysShowLabel = true,
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = BbvaWhite,

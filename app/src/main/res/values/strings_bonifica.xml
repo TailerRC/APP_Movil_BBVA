@@ -272,8 +272,10 @@
     <string name="tab_catalogo">Catálogo</string>
     <string name="tab_operaciones">Operaciones</string>
     <string name="tab_promociones">Promociones</string>
-    <string name="tab_consultar_cliente">Consultar cliente</string>
-    <string name="tab_registrar_politica">Registrar política</string>
+    <!-- Etiquetas cortas: en una pestaña de ~84 dp solo cabe una línea y, si una
+         etiqueta se parte, Material3 recoloca el ícono y la barra queda descuadrada. -->
+    <string name="tab_consultar_cliente">Clientes</string>
+    <string name="tab_registrar_politica">Políticas</string>
 
     <!-- Menú de desarrollo (§14): temporal, se retira con el flujo completo -->
     <string name="dev_menu_titulo">Menú de desarrollo</string>
