@@ -1,5 +1,291 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Textos visibles de BBVA Bonifica. Todo texto de pantalla va en strings.xml (o aquí). app_name sigue en strings.xml -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="reintentar">Reintentar</string>
+    <string name="volver">Volver</string>
+    <string name="logo_bbva" translatable="false">BBVA</string>
+
+    <!-- Módulo 1 · Acceso y Perfil -->
+    <string name="splash_tagline">Paga menos comisión.</string>
+
+    <string name="login_titulo">Bienvenido</string>
+    <string name="login_subtitulo">Ingresa tu correo y contraseña.</string>
+    <string name="login_modo_demo">Modo demo: entra con cliente1@example.com o negocio1@example.com.</string>
+    <string name="campo_correo">Correo</string>
+    <string name="correo_ejemplo">nombre@ejemplo.com</string>
+    <string name="campo_contrasena">Contraseña</string>
+    <string name="contrasena_ejemplo">Tu contraseña</string>
+    <string name="mostrar_contrasena">Mostrar contraseña</string>
+    <string name="ocultar_contrasena">Ocultar contraseña</string>
+    <string name="correo_requerido">Escribe tu correo</string>
+    <string name="correo_formato">Revisa el correo. Debe incluir @ y un dominio, por ejemplo nombre@ejemplo.com</string>
+    <string name="contrasena_requerida">Escribe tu contraseña</string>
+    <string name="ingresar">Ingresar</string>
+    <string name="iniciando_sesion">Iniciando sesión…</string>
+
+    <string name="nueva_contrasena_titulo">Elige una contraseña nueva</string>
+    <string name="nueva_contrasena_subtitulo">La usarás para entrar a partir de ahora.</string>
+    <string name="campo_contrasena_nueva">Nueva contraseña</string>
+    <string name="campo_confirmar_contrasena">Confirmar contraseña</string>
+    <string name="regla_min8">Mínimo 8 caracteres</string>
+    <string name="regla_mayuscula">Una mayúscula</string>
+    <string name="regla_minuscula">Una minúscula</string>
+    <string name="regla_numero">Un número</string>
+    <string name="regla_pendiente">La contraseña no cumple todos los requisitos</string>
+    <string name="contrasenas_no_coinciden">Las contraseñas no coinciden</string>
+    <string name="guardar_contrasena">Guardar contraseña</string>
+    <string name="guardando_contrasena">Guardando…</string>
+    <string name="sesion_vencida">Tu sesión venció. Vuelve a iniciar sesión.</string>
+    <string name="volver_a_iniciar_sesion">Volver a iniciar sesión</string>
+
+    <string name="perfil_titulo">Perfil</string>
+    <string name="perfil_segmento">Segmento</string>
+    <string name="perfil_ciudad">Ciudad</string>
+    <string name="perfil_estado">Estado</string>
+    <string name="perfil_desde">Cliente desde</string>
+    <string name="perfil_correo">Correo</string>
+    <string name="perfil_telefono">Teléfono</string>
+    <string name="perfil_dni">DNI</string>
+    <string name="perfil_cuenta_inactiva">Tu cuenta está inactiva.</string>
+    <string name="perfil_sin_datos">No hay datos de perfil disponibles.</string>
+    <string name="perfil_seccion_datos_personales">Datos personales</string>
+    <string name="perfil_seccion_cuenta">Datos de la cuenta</string>
+    <string name="perfil_seccion_accesos">Accesos rápidos</string>
+    <string name="perfil_catalogo_desc">Tarifas y comisiones de tus productos</string>
+    <string name="perfil_operaciones_desc">Tus operaciones y puntos de atención</string>
+    <string name="perfil_promociones_desc">Políticas y campañas vigentes</string>
+    <string name="cerrar_sesion">Cerrar sesión</string>
+
+    <!-- Módulo 2 · Catálogo de Comisiones -->
+    <string name="catalogo_titulo">Catálogo de comisiones</string>
+    <string name="catalogo_subtitulo">Selecciona una categoría para ver los productos y tarifas aplicables.</string>
+    <string name="categoria_cuentas">Cuentas</string>
+    <string name="categoria_cuentas_desc">Cuentas de ahorro, sueldo y cuentas corrientes</string>
+    <string name="categoria_tarjetas">Tarjetas</string>
+    <string name="categoria_tarjetas_desc">Tarjetas de débito y crédito con beneficios</string>
+    <string name="categoria_prestamos">Préstamos</string>
+    <string name="categoria_prestamos_desc">Préstamos personales, vehiculares e hipotecarios</string>
+    <string name="categoria_seguros">Seguros</string>
+    <string name="categoria_seguros_desc">Protección para tus tarjetas, vida y viajes</string>
+    <string name="categoria_transferencias">Transferencias</string>
+    <string name="categoria_transferencias_desc">Transferencias interbancarias e internacionales</string>
+
+    <string name="productos_buscar_placeholder">Buscar producto por nombre…</string>
+    <string name="productos_sin_resultados">No se encontraron productos para esta búsqueda.</string>
+    <string name="productos_categoria_vacia">No hay productos disponibles en esta categoría.</string>
+    <string name="producto_comision_lista">Comisión de lista</string>
+    <string name="producto_frecuencia">Frecuencia de cobro</string>
+    <string name="frecuencia_mensual">Mensual</string>
+    <string name="frecuencia_anual">Anual</string>
+    <string name="frecuencia_por_operacion">Por operación</string>
+    <string name="frecuencia_unica_vez">Única vez</string>
+
+    <string name="producto_detalle_titulo">Detalle de producto</string>
+    <string name="producto_codigo">Código de producto</string>
+    <string name="producto_categoria">Categoría</string>
+    <string name="producto_estado">Estado</string>
+    <string name="calcular_descuento">Calcular descuento</string>
+    <string name="producto_no_disponible">Producto no disponible</string>
+    <string name="producto_no_disponible_desc">Este producto está descontinuado y no permite calcular descuentos.</string>
+    <string name="producto_no_encontrado">No se encontró la información del producto.</string>
+
+    <!-- Módulo 3 · Descuentos (núcleo) -->
+    <string name="calcular_titulo">Calcular descuento</string>
+    <string name="calcular_seccion_operacion">Operación</string>
+    <string name="calcular_seccion_producto">Producto</string>
+    <string name="calcular_recomendada">Recomendada</string>
+    <string name="calcular_cantidad">Cantidad</string>
+    <string name="calcular_disminuir">Disminuir cantidad</string>
+    <string name="calcular_aumentar">Aumentar cantidad</string>
+    <string name="calcular_sin_producto">Aún no has elegido un producto. Selecciona uno del catálogo para poder calcular tu descuento.</string>
+    <string name="calcular_ir_catalogo">Ir al catálogo</string>
+    <string name="calcular_calculando">Calculando…</string>
+
+    <string name="resultado_titulo">Resultado</string>
+    <string name="resultado_no_encontrado">No se encontró el descuento solicitado.</string>
+    <string name="resultado_producto">Producto</string>
+    <string name="resultado_cantidad">Cantidad</string>
+    <string name="resultado_operacion">Operación</string>
+    <string name="resultado_fecha">Fecha de cálculo</string>
+    <string name="resultado_bruto">Bruto</string>
+    <string name="resultado_politica">Política aplicada</string>
+    <string name="resultado_sin_politica">Sin descuento aplicable</string>
+    <string name="resultado_descuento">Descuento</string>
+    <string name="resultado_neto">Neto a pagar</string>
+    <string name="resultado_pago_seccion">Medio de pago</string>
+    <string name="pago_cargo_cuenta">Cargo en cuenta</string>
+    <string name="pago_tarjeta_debito">Tarjeta de débito</string>
+    <string name="pago_efectivo_ventanilla">Efectivo en ventanilla</string>
+    <string name="resultado_confirmar">Confirmar</string>
+    <string name="resultado_confirmando">Confirmando…</string>
+    <string name="resultado_anular">Anular</string>
+    <string name="resultado_anulando">Anulando…</string>
+    <string name="resultado_ver_comprobante">Ver comprobante</string>
+    <string name="resultado_anulado">Este descuento fue anulado: no se generó ninguna orden de pago.</string>
+    <string name="dialog_confirmar_titulo">¿Confirmar el descuento?</string>
+    <string name="dialog_confirmar_mensaje">Se generará la orden de pago por el monto neto.</string>
+    <string name="dialog_anular_titulo">¿Anular el descuento?</string>
+    <string name="dialog_anular_mensaje">Esta acción no se puede deshacer y no se generará ninguna orden de pago.</string>
+    <string name="cancelar">Cancelar</string>
+
+    <!-- Módulo 5 · Operaciones Comerciales -->
+    <string name="operaciones_titulo">Mis operaciones</string>
+    <string name="operaciones_subtitulo">Operaciones y puntos de atención asociados a tu cuenta.</string>
+    <string name="operaciones_vacio">No tienes operaciones comerciales registradas.</string>
+    <string name="operacion_codigo">Código de operación</string>
+    <string name="operacion_canal">Canal</string>
+    <string name="operacion_oficina">Oficina</string>
+    <string name="operacion_ciudad">Ciudad</string>
+    <string name="operacion_estado">Estado</string>
+    <string name="operacion_fecha">Fecha</string>
+    <string name="operacion_detalle_titulo">Detalle de operación</string>
+    <string name="operacion_seccion_info">Información de la operación</string>
+    <string name="operacion_descuentos_seccion">Descuentos asociados</string>
+    <string name="operacion_sin_descuentos">Aún no se han calculado descuentos para esta operación.</string>
+    <string name="operacion_ver_pagos">Ver pagos</string>
+    <string name="operacion_no_encontrada">No se encontró la operación solicitada.</string>
+
+    <!-- Canales -->
+    <string name="canal_sucursal">Oficina / Ventanilla</string>
+    <string name="canal_banca_movil">Banca Móvil</string>
+    <string name="canal_web">Banca por Internet</string>
+    <string name="canal_cajero">Cajero Automático</string>
+    <string name="canal_agente">Agente BBVA</string>
+    <string name="canal_desconocido">Otro canal</string>
+
+    <!-- Módulo 4 · Promociones -->
+    <string name="promo_titulo">Promociones</string>
+    <string name="promo_tab_politicas">Políticas</string>
+    <string name="promo_tab_campanas">Campañas</string>
+    <string name="promo_filtro_categoria">Categoría</string>
+    <string name="promo_filtro_moneda">Moneda</string>
+    <string name="promo_filtro_canal">Canal</string>
+    <string name="filtro_todas">Todas</string>
+    <string name="filtro_todos">Todos</string>
+    <string name="promo_alcance">Alcance</string>
+    <string name="promo_alcance_todo">Todos los productos</string>
+    <string name="promo_alcance_categoria">Categoría</string>
+    <string name="promo_alcance_producto">Producto</string>
+    <string name="promo_minimo">Monto mínimo</string>
+    <string name="promo_sin_minimo">Sin monto mínimo</string>
+    <string name="promo_vigencia">Vigencia</string>
+    <string name="promo_segmento">Segmento</string>
+    <string name="promo_politicas_vacias">No hay políticas vigentes para mostrar.</string>
+    <string name="promo_politicas_sin_resultados">No hay promociones que coincidan con los filtros seleccionados.</string>
+    <string name="promo_campanas_vacias">No hay campañas con este estado.</string>
+    <string name="promo_estado_campana">Estado de la campaña</string>
+    <string name="campana_estado_activas">Activas</string>
+    <string name="campana_estado_programadas">Programadas</string>
+    <string name="campana_estado_finalizadas">Finalizadas</string>
+    <string name="campana_estado_pausadas">Pausadas</string>
+    <string name="segmento_personal">Personal</string>
+    <string name="segmento_preferente">Preferente</string>
+    <string name="segmento_premium">Premium</string>
+    <string name="segmento_joven">Joven</string>
+    <string name="segmento_pyme">PyME</string>
+    <string name="segmento_todos">Todos los segmentos</string>
+
+    <!-- Módulo 6 · Pagos e Historial -->
+    <string name="pagos_titulo">Pagos</string>
+    <string name="pagos_subtitulo">Pagos generados por los descuentos de esta operación.</string>
+    <string name="pagos_vacio">Aún no hay pagos registrados para esta operación.</string>
+    <string name="pago_medio">Medio de pago</string>
+    <string name="pago_fecha">Fecha de pago</string>
+
+    <string name="comprobante_titulo">Comprobante</string>
+    <string name="comprobante_recibo">Comprobante de pago</string>
+    <string name="comprobante_monto">Importe pagado</string>
+    <string name="comprobante_moneda">Moneda</string>
+    <string name="comprobante_estado">Estado</string>
+    <string name="comprobante_descuento">Descuento asociado</string>
+    <string name="comprobante_ver_historial">Ver historial</string>
+    <string name="comprobante_no_encontrado">No se encontró el pago solicitado.</string>
+
+    <string name="historial_titulo">Historial</string>
+    <string name="historial_subtitulo">Línea de tiempo del descuento</string>
+    <string name="historial_vacio">Aún no hay eventos registrados para este descuento.</string>
+    <string name="historial_iniciado">Descuento iniciado</string>
+    <string name="historial_confirmado">Descuento confirmado</string>
+    <string name="historial_anulado">Descuento anulado</string>
+
+    <!-- Módulo 7 · Panel de Negocio y RoleGuard -->
+    <string name="rol_seccion_restringida">Esta sección es solo para personal de negocio.</string>
+
+    <string name="negocio_consulta_titulo">Consultar cliente</string>
+    <string name="negocio_codigo_cliente">Código de cliente</string>
+    <string name="negocio_codigo_placeholder">PARTY-000024</string>
+    <string name="negocio_codigo_requerido">Escribe el código del cliente</string>
+    <string name="negocio_codigo_formato">El código empieza con PARTY-, por ejemplo PARTY-000024</string>
+    <string name="negocio_buscar">Consultar</string>
+    <string name="negocio_buscar_cargando">Buscando…</string>
+    <string name="negocio_consulta_vacio">Escribe el código de un cliente para ver su ficha y sus operaciones.</string>
+    <string name="negocio_ver_ficha">Ver ficha del cliente</string>
+    <string name="negocio_operaciones_seccion">Operaciones del cliente (%1$d)</string>
+    <string name="negocio_cliente_sin_operaciones">Este cliente no tiene operaciones registradas.</string>
+
+    <string name="negocio_cliente_titulo">Ficha de cliente</string>
+    <string name="negocio_cliente_seccion_datos">Datos del cliente</string>
+    <string name="negocio_cliente_no_encontrado">Cliente no encontrado</string>
+    <string name="negocio_cliente_inactivo">Este cliente está inactivo.</string>
+
+    <string name="negocio_politica_titulo">Registrar política</string>
+    <string name="politica_seccion_identificacion">Identificación</string>
+    <string name="politica_seccion_descuento">Descuento</string>
+    <string name="politica_seccion_aplicacion">Aplicación</string>
+    <string name="politica_seccion_vigencia">Vigencia</string>
+    <string name="politica_codigo">Código de la política</string>
+    <string name="politica_codigo_ejemplo">POL-100</string>
+    <string name="politica_codigo_requerido">Escribe el código de la política</string>
+    <string name="politica_codigo_formato">Usa el formato POL-### (tres dígitos)</string>
+    <string name="politica_nombre">Nombre</string>
+    <string name="politica_nombre_ejemplo" formatted="false">10% en tarjetas</string>
+    <string name="politica_nombre_requerido">Escribe el nombre de la política</string>
+    <string name="politica_tipo">Tipo de descuento</string>
+    <string name="politica_tipo_porcentaje">Porcentaje</string>
+    <string name="politica_tipo_fijo">Monto fijo</string>
+    <string name="politica_valor">Valor del descuento</string>
+    <string name="politica_valor_placeholder">10</string>
+    <string name="politica_valor_ayuda">Porcentaje entre 1 y 100, o el monto a descontar.</string>
+    <string name="politica_valor_requerido">Escribe el valor del descuento</string>
+    <string name="politica_valor_formato">Escribe un número válido, por ejemplo 10</string>
+    <string name="politica_valor_rango">Usa un valor mayor que 0 (y hasta 100 si es porcentaje)</string>
+    <string name="politica_referencia">Referencia</string>
+    <string name="politica_referencia_categoria">TARJETAS</string>
+    <string name="politica_referencia_producto">PROD-0025</string>
+    <string name="politica_referencia_requerida">Escribe la categoría o el producto al que aplica</string>
+    <string name="politica_minimo_placeholder">0</string>
+    <string name="politica_minimo_ayuda">Opcional. Déjalo en blanco si no hay monto mínimo.</string>
+    <string name="politica_minimo_formato">Escribe un monto mínimo válido</string>
+    <string name="politica_minimo_rango">El monto mínimo no puede ser negativo</string>
+    <string name="politica_desde">Vigente desde</string>
+    <string name="politica_hasta">Vigente hasta</string>
+    <string name="politica_fecha_placeholder">AAAA-MM-DD</string>
+    <string name="politica_fecha_requerido">Escribe la fecha</string>
+    <string name="politica_fecha_formato" tools:ignore="TypographyDashes">Usa el formato AAAA-MM-DD, por ejemplo 2026-01-01</string>
+    <string name="politica_fecha_orden">La fecha final debe ser posterior a la inicial</string>
+    <string name="politica_registrar">Registrar política</string>
+    <string name="politica_registrando">Registrando…</string>
+    <string name="politica_registrada">Política registrada correctamente.</string>
+
+    <!-- Barras inferiores por rol (§11.2) -->
+    <string name="tab_inicio">Inicio</string>
+    <string name="tab_catalogo">Catálogo</string>
+    <string name="tab_operaciones">Operaciones</string>
+    <string name="tab_promociones">Promociones</string>
+    <!-- Etiquetas cortas: en una pestaña de ~84 dp solo cabe una línea y, si una
+         etiqueta se parte, Material3 recoloca el ícono y la barra queda descuadrada. -->
+    <string name="tab_consultar_cliente">Clientes</string>
+    <string name="tab_registrar_politica">Políticas</string>
+
+    <!-- Menú de desarrollo (§14): temporal, se retira con el flujo completo -->
+    <string name="dev_menu_titulo">Menú de desarrollo</string>
+    <string name="dev_menu_subtitulo">Atajos a todas las pantallas (reemplazar por Splash)</string>
+
+    <!-- Rediseño UX/UI -->
+    <string name="toggle_tema">Cambiar tema</string>
+    <string name="perfil_bienvenido">Bienvenido,</string>
+    <string name="filtro_disponibles">Disponibles</string>
+    <string name="filtro_descontinuados">Descontinuados</string>
+    <string name="operacion_tab_info">Información</string>
+    <string name="operacion_tab_descuentos">Descuentos</string>
 </resources>
