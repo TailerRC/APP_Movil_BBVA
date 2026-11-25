@@ -4,20 +4,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.AccountBalance
 import androidx.compose.material.icons.outlined.CreditCard
 import androidx.compose.material.icons.outlined.Payments
@@ -34,14 +34,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.bbva.bonifica.R
 import com.bbva.bonifica.ui.components.BonificaTopBar
-import com.bbva.bonifica.ui.theme.BbvaBlue
-import com.bbva.bonifica.ui.theme.BbvaBlueLight
-import com.bbva.bonifica.ui.theme.BbvaGray700
-import com.bbva.bonifica.ui.theme.BbvaNavy
-import com.bbva.bonifica.ui.theme.BbvaWhite
 
 /**
  * Categoría visual para el catálogo (§12).
@@ -88,7 +84,7 @@ val CATEGORIAS_CATALOGO = listOf(
 
 /**
  * Pantalla de Categorías del Catálogo de Comisiones (§12).
- * 5 tarjetas con ícono: Cuentas, Tarjetas, Préstamos, Seguros, Transferencias.
+ * Grid de 2 columnas con tarjetas visuales: Cuentas, Tarjetas, Préstamos, Seguros, Transferencias.
  */
 @Composable
 fun CategoriasScreen(
@@ -102,37 +98,34 @@ fun CategoriasScreen(
             onBack = onBack
         )
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 16.dp),
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            item {
+            item(span = { GridItemSpan(2) }) {
                 Text(
                     text = stringResource(R.string.catalogo_subtitulo),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = BbvaGray700,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 4.dp)
                 )
             }
 
             items(CATEGORIAS_CATALOGO, key = { it.id }) { cat ->
-                CategoriaCard(
+                CategoriaGridCard(
                     categoria = cat,
                     onClick = { onCategorySelected(cat.id) }
                 )
-            }
-
-            item {
-                Spacer(Modifier.height(16.dp))
             }
         }
     }
 }
 
 @Composable
-private fun CategoriaCard(
+private fun CategoriaGridCard(
     categoria: CategoriaItem,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -141,52 +134,49 @@ private fun CategoriaCard(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = BbvaWhite),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            horizontalAlignment = Alignment.Start
         ) {
             Surface(
                 shape = CircleShape,
-                color = BbvaBlueLight.copy(alpha = 0.12f),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
                 modifier = Modifier.size(48.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = categoria.icon,
                         contentDescription = null,
-                        tint = BbvaBlue,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(24.dp)
                     )
                 }
             }
 
-            Spacer(Modifier.width(16.dp))
+            Spacer(Modifier.height(14.dp))
 
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(categoria.titleRes),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = BbvaNavy
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = stringResource(categoria.descriptionRes),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = BbvaGray700
-                )
-            }
+            Text(
+                text = stringResource(categoria.titleRes),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
 
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = null,
-                tint = BbvaBlue,
-                modifier = Modifier.size(20.dp)
+            Spacer(Modifier.height(4.dp))
+
+            Text(
+                text = stringResource(categoria.descriptionRes),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

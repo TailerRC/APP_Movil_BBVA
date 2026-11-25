@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,15 +25,18 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.RadioButtonUnchecked
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -51,11 +55,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -63,6 +69,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.bbva.bonifica.R
 import com.bbva.bonifica.core.formatMoney
 import com.bbva.bonifica.domain.model.Role
@@ -72,14 +79,18 @@ import com.bbva.bonifica.ui.theme.BbvaGray300
 import com.bbva.bonifica.ui.theme.BbvaGray700
 import com.bbva.bonifica.ui.theme.BbvaNavy
 import com.bbva.bonifica.ui.theme.BbvaWhite
+import com.bbva.bonifica.ui.theme.DarkBackground
+import com.bbva.bonifica.ui.theme.DarkSurface
 import com.bbva.bonifica.ui.theme.Error
 import com.bbva.bonifica.ui.theme.ErrorDark
 import com.bbva.bonifica.ui.theme.Success
 import com.bbva.bonifica.ui.theme.Warning
 
-// Componentes reutilizables (diseño §9). Persona A agrega el resto
-// (InfoCard, ProductCard...); ConfirmDialog lo aporta el Módulo 3,
-// TimelineItem + paymentMethodName el Módulo 6 y RoleGuard el Módulo 7.
+// Componentes reutilizables (diseño §9).
+
+// ---------------------------------------------------------------------------
+// Buttons
+// ---------------------------------------------------------------------------
 
 @Composable
 fun PrimaryButton(
@@ -96,10 +107,17 @@ fun PrimaryButton(
         enabled = enabled && !loading,
         modifier = modifier.fillMaxWidth().height(52.dp),
         shape = RoundedCornerShape(26.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = BbvaBlue, contentColor = BbvaWhite)
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        )
     ) {
         if (loading) {
-            CircularProgressIndicator(modifier = Modifier.size(20.dp), color = BbvaWhite, strokeWidth = 2.dp)
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                color = MaterialTheme.colorScheme.onPrimary,
+                strokeWidth = 2.dp
+            )
             Spacer(Modifier.width(10.dp))
         }
         Text(if (loading) loadingText ?: text else text)
@@ -121,15 +139,23 @@ fun SecondaryButton(
         enabled = enabled && !loading,
         modifier = modifier.fillMaxWidth().height(52.dp),
         shape = RoundedCornerShape(26.dp),
-        border = BorderStroke(1.dp, BbvaBlue)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
     ) {
         if (loading) {
-            CircularProgressIndicator(modifier = Modifier.size(20.dp), color = BbvaBlue, strokeWidth = 2.dp)
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                color = MaterialTheme.colorScheme.primary,
+                strokeWidth = 2.dp
+            )
             Spacer(Modifier.width(10.dp))
         }
-        Text(if (loading) loadingText ?: text else text, color = BbvaBlue)
+        Text(if (loading) loadingText ?: text else text, color = MaterialTheme.colorScheme.primary)
     }
 }
+
+// ---------------------------------------------------------------------------
+// Money & Status
+// ---------------------------------------------------------------------------
 
 @Composable
 fun MoneyText(
@@ -161,7 +187,7 @@ fun StatusChip(status: String, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(50),
-        color = color.copy(alpha = 0.15f)
+        color = color.copy(alpha = 0.18f)
     ) {
         Text(
             text = status,
@@ -181,17 +207,21 @@ fun paymentMethodName(method: String): String = when (method) {
     else -> method
 }
 
+// ---------------------------------------------------------------------------
+// State views
+// ---------------------------------------------------------------------------
+
 @Composable
 fun LoadingView(modifier: Modifier = Modifier) {
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator(color = BbvaBlue)
+        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
     }
 }
 
 @Composable
 fun EmptyView(message: String, modifier: Modifier = Modifier) {
     Box(modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
-        Text(message, textAlign = TextAlign.Center, color = BbvaGray700)
+        Text(message, textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -202,7 +232,7 @@ fun ErrorView(message: String, onRetry: () -> Unit, modifier: Modifier = Modifie
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(message, textAlign = TextAlign.Center)
+        Text(message, textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onBackground)
         SecondaryButton(
             text = stringResource(R.string.reintentar),
             onClick = onRetry,
@@ -210,6 +240,10 @@ fun ErrorView(message: String, onRetry: () -> Unit, modifier: Modifier = Modifie
         )
     }
 }
+
+// ---------------------------------------------------------------------------
+// TopBar
+// ---------------------------------------------------------------------------
 
 /** Barra azul de marca con título, botón atrás opcional y acciones (§9). */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -220,8 +254,17 @@ fun BonificaTopBar(
     onBack: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
+    val isDarkTheme = MaterialTheme.colorScheme.background == DarkBackground
+    val containerColor = if (isDarkTheme) DarkSurface else BbvaBlue
+
     TopAppBar(
-        title = { Text(title, color = BbvaWhite, style = MaterialTheme.typography.titleLarge) },
+        title = {
+            Text(
+                title,
+                color = BbvaWhite,
+                style = MaterialTheme.typography.titleLarge
+            )
+        },
         modifier = modifier,
         navigationIcon = {
             if (onBack != null) {
@@ -236,13 +279,199 @@ fun BonificaTopBar(
         },
         actions = actions,
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = BbvaBlue,
+            containerColor = containerColor,
             titleContentColor = BbvaWhite,
             navigationIconContentColor = BbvaWhite,
             actionIconContentColor = BbvaWhite
         )
     )
 }
+
+// ---------------------------------------------------------------------------
+// HeroHeader — gradient header with BBVA logo and greeting (PerfilScreen home)
+// ---------------------------------------------------------------------------
+
+/**
+ * Cabecera hero con gradiente BBVA para la pantalla de inicio.
+ * Se extiende detrás de la barra de estado (statusBarsPadding interno),
+ * muestra el logo oficial de BBVA, el saludo personalizado y el toggle de tema.
+ */
+@Composable
+fun HeroHeader(
+    name: String,
+    segment: String,
+    modifier: Modifier = Modifier,
+    onToggleTheme: (() -> Unit)? = null,
+    isDark: Boolean = false
+) {
+    val isDarkTheme = MaterialTheme.colorScheme.background == DarkBackground
+    val gradientColors = if (isDarkTheme) {
+        listOf(BbvaNavy, DarkSurface)
+    } else {
+        listOf(BbvaNavy, BbvaBlue)
+    }
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Brush.verticalGradient(colors = gradientColors))
+            .statusBarsPadding()
+            .padding(horizontal = 20.dp, vertical = 16.dp)
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            // Fila superior: Logo BBVA + nombre de app a la izquierda, toggle de tema a la derecha
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    BonificaLogo(size = 34.dp)
+                    Spacer(Modifier.width(10.dp))
+                    Text(
+                        text = stringResource(R.string.app_name),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = BbvaWhite
+                    )
+                }
+
+                if (onToggleTheme != null) {
+                    IconButton(onClick = onToggleTheme) {
+                        Icon(
+                            imageVector = if (isDark) Icons.Outlined.LightMode else Icons.Outlined.DarkMode,
+                            contentDescription = stringResource(R.string.toggle_tema),
+                            tint = BbvaWhite
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            Text(
+                text = stringResource(R.string.perfil_bienvenido),
+                style = MaterialTheme.typography.bodyMedium,
+                color = BbvaWhite.copy(alpha = 0.8f)
+            )
+            Spacer(Modifier.height(2.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = BbvaWhite,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                if (segment.isNotBlank()) {
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = BbvaWhite.copy(alpha = 0.16f)
+                    ) {
+                        Text(
+                            text = segment,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = BbvaWhite
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// AmountDisplay — gross / discount / net breakdown
+// ---------------------------------------------------------------------------
+
+/**
+ * Desglose visual de importes: bruto tachado, descuento en verde y neto grande.
+ * Usado en ResultadoScreen y ProductoDetalleScreen para resaltar el ahorro.
+ */
+@Composable
+fun AmountDisplay(
+    grossAmount: Double,
+    discountAmount: Double,
+    netAmount: Double,
+    policyName: String,
+    currency: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Net amount — biggest element
+        Text(
+            text = formatMoney(netAmount, currency),
+            style = MaterialTheme.typography.displayLarge.copy(
+                fontWeight = FontWeight.Bold,
+                fontSize = 36.sp
+            ),
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Text(
+            text = stringResource(R.string.resultado_neto),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Spacer(Modifier.height(16.dp))
+        HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f))
+        Spacer(Modifier.height(16.dp))
+
+        // Gross & discount row
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(horizontalAlignment = Alignment.Start) {
+                Text(
+                    text = stringResource(R.string.resultado_bruto),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = formatMoney(grossAmount, currency),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    text = stringResource(R.string.resultado_descuento),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = "- ${formatMoney(discountAmount, currency)}",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Success
+                )
+            }
+        }
+
+        if (policyName.isNotBlank()) {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = policyName,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Logo
+// ---------------------------------------------------------------------------
 
 /**
  * Marca de la app: el logo oficial de BBVA Perú (`R.drawable.logo_bbva`).
@@ -253,11 +482,16 @@ fun BonificaLogo(modifier: Modifier = Modifier, size: Dp = 84.dp) {
     Image(
         painter = painterResource(R.drawable.logo_bbva),
         contentDescription = stringResource(R.string.logo_bbva),
-        modifier = modifier.size(size)
+        modifier = modifier
+            .size(size)
             .clip(RoundedCornerShape(size * 0.18f)),
         contentScale = ContentScale.Crop
     )
 }
+
+// ---------------------------------------------------------------------------
+// LabeledField
+// ---------------------------------------------------------------------------
 
 /**
  * Campo de texto con etiqueta visible arriba, error junto al campo y teclado
@@ -293,14 +527,15 @@ fun LabeledField(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier),
             enabled = enabled,
             isError = error != null,
-            placeholder = { Text(placeholder, color = BbvaGray700) },
+            placeholder = { Text(placeholder, color = MaterialTheme.colorScheme.onSurfaceVariant) },
             leadingIcon = if (leadingIcon != null) {
                 {
-                    Icon(leadingIcon, contentDescription = null, tint = BbvaGray700)
+                    Icon(leadingIcon, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             } else null,
             trailingIcon = if (isPassword && onTogglePassword != null) {
@@ -311,7 +546,7 @@ fun LabeledField(
                             contentDescription = stringResource(
                                 if (passwordVisible) R.string.ocultar_contrasena else R.string.mostrar_contrasena
                             ),
-                            tint = BbvaGray700
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -330,18 +565,18 @@ fun LabeledField(
             singleLine = true,
             shape = RoundedCornerShape(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = BbvaBlue,
-                unfocusedBorderColor = BbvaGray300,
-                errorBorderColor = Error,
-                focusedTextColor = BbvaNavy,
-                unfocusedTextColor = BbvaNavy,
-                errorTextColor = BbvaNavy,
-                focusedContainerColor = BbvaWhite,
-                unfocusedContainerColor = BbvaWhite,
-                errorContainerColor = BbvaWhite,
-                disabledTextColor = BbvaGray700,
-                disabledBorderColor = BbvaGray300,
-                disabledContainerColor = BbvaWhite
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                errorBorderColor = MaterialTheme.colorScheme.error,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                errorTextColor = MaterialTheme.colorScheme.onSurface,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                errorContainerColor = MaterialTheme.colorScheme.surface,
+                disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledBorderColor = MaterialTheme.colorScheme.outline,
+                disabledContainerColor = MaterialTheme.colorScheme.surface
             )
         )
         when {
@@ -352,21 +587,25 @@ fun LabeledField(
                 Icon(
                     imageVector = Icons.Outlined.ErrorOutline,
                     contentDescription = null,
-                    tint = ErrorDark,
+                    tint = MaterialTheme.colorScheme.error,
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(Modifier.width(6.dp))
-                Text(error, style = MaterialTheme.typography.bodySmall, color = ErrorDark)
+                Text(error, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
             }
             helper != null -> Text(
                 text = helper,
                 modifier = Modifier.padding(start = 12.dp, top = 6.dp),
                 style = MaterialTheme.typography.bodySmall,
-                color = BbvaGray700
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
 }
+
+// ---------------------------------------------------------------------------
+// ErrorBanner
+// ---------------------------------------------------------------------------
 
 /** Aviso de error general (§10): mensaje + ícono, junto a la acción que falló. */
 @Composable
@@ -374,7 +613,7 @@ fun ErrorBanner(message: String, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        color = Error.copy(alpha = 0.08f)
+        color = MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
@@ -383,7 +622,7 @@ fun ErrorBanner(message: String, modifier: Modifier = Modifier) {
             Icon(
                 imageVector = Icons.Outlined.ErrorOutline,
                 contentDescription = null,
-                tint = Error,
+                tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier.size(20.dp)
             )
             Spacer(Modifier.width(8.dp))
@@ -391,11 +630,15 @@ fun ErrorBanner(message: String, modifier: Modifier = Modifier) {
                 text = message,
                 modifier = Modifier.weight(1f),
                 style = MaterialTheme.typography.bodyMedium,
-                color = ErrorDark
+                color = MaterialTheme.colorScheme.error
             )
         }
     }
 }
+
+// ---------------------------------------------------------------------------
+// RequirementRow
+// ---------------------------------------------------------------------------
 
 /** Fila de lista de requisitos: check verde cuando se cumple, círculo vacío si no. */
 @Composable
@@ -404,21 +647,24 @@ fun RequirementRow(text: String, satisfied: Boolean, modifier: Modifier = Modifi
         Icon(
             imageVector = if (satisfied) Icons.Filled.CheckCircle else Icons.Outlined.RadioButtonUnchecked,
             contentDescription = null,
-            tint = if (satisfied) Success else BbvaGray300,
+            tint = if (satisfied) Success else MaterialTheme.colorScheme.outline,
             modifier = Modifier.size(18.dp)
         )
         Spacer(Modifier.width(8.dp))
         Text(
             text = text,
             style = MaterialTheme.typography.bodyMedium,
-            color = if (satisfied) BbvaNavy else BbvaGray700
+            color = if (satisfied) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
 
+// ---------------------------------------------------------------------------
+// ConfirmDialog
+// ---------------------------------------------------------------------------
+
 /**
- * Diálogo de confirmar/anular (§9): se usa antes de **Confirmar** y de **Anular**
- * un descuento, porque ambos cambian el estado de forma definitiva (§12).
+ * Diálogo de confirmación destructiva (§9): título + mensaje, Confirmar y Cancelar.
  */
 @Composable
 fun ConfirmDialog(
@@ -433,29 +679,36 @@ fun ConfirmDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         modifier = modifier,
-        containerColor = BbvaWhite,
-        title = { Text(title, color = BbvaNavy, style = MaterialTheme.typography.titleLarge) },
-        text = { Text(message, color = BbvaNavy, style = MaterialTheme.typography.bodyMedium) },
+        title = {
+            Text(title, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
+        },
+        text = {
+            Text(message, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        },
         confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text(confirmText, color = BbvaBlue, style = MaterialTheme.typography.labelLarge)
+            Button(
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+            ) {
+                Text(confirmText, style = MaterialTheme.typography.labelLarge)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(dismissText, color = BbvaGray700, style = MaterialTheme.typography.labelLarge)
+                Text(dismissText, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelLarge)
             }
         }
     )
 }
 
+// ---------------------------------------------------------------------------
+// TimelineItem
+// ---------------------------------------------------------------------------
+
 /**
  * Punto + línea de la línea de tiempo del historial (§9). El punto se colorea con
  * `statusColor(status)`; la línea llega hasta el inicio del siguiente elemento y
  * `isLast` la omite, para que la columna de eventos quede continua.
- *
- * La fila usa `IntrinsicSize.Min` para que el punto y la línea midan lo mismo que
- * el contenido de la derecha (el alto del texto varía por el detalle de cada evento).
  */
 @Composable
 fun TimelineItem(
@@ -468,7 +721,6 @@ fun TimelineItem(
     isLast: Boolean = false
 ) {
     Row(modifier = modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
-        // Punto arriba y línea debajo, centrados en una columna del ancho fijo.
         Box(
             modifier = Modifier.width(28.dp).fillMaxHeight(),
             contentAlignment = Alignment.TopCenter
@@ -476,10 +728,10 @@ fun TimelineItem(
             if (!isLast) {
                 Box(
                     modifier = Modifier
-                        .padding(top = 16.dp) // deja libre el punto (14 dp)
+                        .padding(top = 16.dp)
                         .width(2.dp)
                         .fillMaxHeight()
-                        .background(BbvaGray300)
+                        .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
                 )
             }
             Box(
@@ -498,7 +750,7 @@ fun TimelineItem(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
-                    color = BbvaNavy
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 if (status != null) {
                     StatusChip(status = status)
@@ -510,7 +762,7 @@ fun TimelineItem(
             Text(
                 text = timestamp,
                 style = MaterialTheme.typography.bodySmall,
-                color = BbvaGray700
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             channel?.let {
@@ -518,7 +770,7 @@ fun TimelineItem(
                 Text(
                     text = it,
                     style = MaterialTheme.typography.bodySmall,
-                    color = BbvaGray700
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -527,7 +779,7 @@ fun TimelineItem(
                 Text(
                     text = it,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = BbvaNavy
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         }
@@ -535,26 +787,18 @@ fun TimelineItem(
 }
 
 // ---------------------------------------------------------------------------
-// Control de acceso por rol (§9, §11.2) — Módulo 7
+// RoleGuard
 // ---------------------------------------------------------------------------
 
 /**
  * Rol de la sesión activa (claim `cognito:groups`), disponible para cualquier
- * composable. Lo publica `AppNavHost` y se relee en cada cambio de pila: el rol
- * solo cambia al iniciar o cerrar sesión, y ambos navegan a otro destino.
+ * composable. Lo publica `AppNavHost` y se relee en cada cambio de pila.
  */
 val LocalRole = staticCompositionLocalOf<Role?> { null }
 
 /**
  * Muestra [content] solo si la sesión tiene el [role] indicado; si no, muestra
  * [fallback] (por defecto, el aviso estándar de §9).
- *
- * Es la doble protección de §11.2 junto al 403 de la API: oculta el panel de
- * negocio a un usuario `cliente` aunque llegue a la ruta por la fuerza.
- *
- * Uso: `RoleGuard(role = Role.NEGOCIO, modifier = Modifier.weight(1f)) { … }`.
- * El [modifier] permite situarlo dentro de un `Column` (p. ej. con `weight`),
- * porque el contenido ya no vive directamente en ese scope.
  */
 @Composable
 fun RoleGuard(
@@ -575,7 +819,7 @@ fun RoleDeniedView(modifier: Modifier = Modifier) {
         Text(
             text = stringResource(R.string.rol_seccion_restringida),
             textAlign = TextAlign.Center,
-            color = BbvaGray700
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

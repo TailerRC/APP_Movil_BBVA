@@ -47,12 +47,6 @@ import com.bbva.bonifica.ui.components.LoadingView
 import com.bbva.bonifica.ui.components.RoleGuard
 import com.bbva.bonifica.ui.components.StatusChip
 import com.bbva.bonifica.ui.operaciones.OperationCard
-import com.bbva.bonifica.ui.theme.BbvaBlue
-import com.bbva.bonifica.ui.theme.BbvaBlueLight
-import com.bbva.bonifica.ui.theme.BbvaGray300
-import com.bbva.bonifica.ui.theme.BbvaGray700
-import com.bbva.bonifica.ui.theme.BbvaNavy
-import com.bbva.bonifica.ui.theme.BbvaWhite
 import com.bbva.bonifica.ui.theme.Warning
 
 /**
@@ -124,7 +118,7 @@ private fun ClienteFicha(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = BbvaWhite),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Row(
@@ -133,14 +127,14 @@ private fun ClienteFicha(
             ) {
                 Surface(
                     shape = CircleShape,
-                    color = BbvaBlueLight.copy(alpha = 0.12f),
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
                     modifier = Modifier.size(52.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
                             imageVector = Icons.Outlined.Person,
                             contentDescription = null,
-                            tint = BbvaBlue,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(28.dp)
                         )
                     }
@@ -152,13 +146,13 @@ private fun ClienteFicha(
                     Text(
                         text = customer.name,
                         style = MaterialTheme.typography.titleLarge,
-                        color = BbvaNavy
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
                         text = customer.customerReference,
                         style = MaterialTheme.typography.bodySmall,
-                        color = BbvaGray700
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
@@ -173,14 +167,14 @@ private fun ClienteFicha(
         Text(
             text = stringResource(R.string.negocio_cliente_seccion_datos).uppercase(),
             style = MaterialTheme.typography.labelSmall,
-            color = BbvaGray700
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(Modifier.height(8.dp))
 
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = BbvaWhite),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)) {
@@ -217,7 +211,7 @@ private fun ClienteFicha(
         Text(
             text = stringResource(R.string.negocio_operaciones_seccion, data.operations.size),
             style = MaterialTheme.typography.titleMedium,
-            color = BbvaNavy
+            color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(Modifier.height(12.dp))
 
@@ -225,7 +219,7 @@ private fun ClienteFicha(
             Text(
                 text = stringResource(R.string.negocio_cliente_sin_operaciones),
                 style = MaterialTheme.typography.bodyMedium,
-                color = BbvaGray700
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -252,17 +246,17 @@ private fun FilaCliente(label: String, value: String, conDivisor: Boolean = true
             text = label,
             modifier = Modifier.weight(1f),
             style = MaterialTheme.typography.bodyMedium,
-            color = BbvaGray700
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(
             text = value,
             modifier = Modifier.weight(1.5f),
             style = MaterialTheme.typography.bodyMedium,
-            color = BbvaNavy,
+            color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.End
         )
     }
-    if (conDivisor) HorizontalDivider(color = BbvaGray300.copy(alpha = 0.6f))
+    if (conDivisor) HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f))
 }
 
 /** Aviso de cliente `INACTIVE`, con el mismo formato del perfil (§12). */
@@ -280,7 +274,7 @@ private fun AvisoInactivo() {
             Icon(
                 imageVector = Icons.Outlined.Warning,
                 contentDescription = null,
-                tint = BbvaNavy,
+                tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(20.dp)
             )
             Spacer(Modifier.width(8.dp))
@@ -288,7 +282,7 @@ private fun AvisoInactivo() {
                 text = stringResource(R.string.negocio_cliente_inactivo),
                 modifier = Modifier.weight(1f),
                 style = MaterialTheme.typography.bodyMedium,
-                color = BbvaNavy
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }

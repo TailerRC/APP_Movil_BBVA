@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bbva.bonifica.R
 import com.bbva.bonifica.core.UiState
@@ -47,15 +48,10 @@ import com.bbva.bonifica.ui.components.EmptyView
 import com.bbva.bonifica.ui.components.ErrorView
 import com.bbva.bonifica.ui.components.LoadingView
 import com.bbva.bonifica.ui.components.StatusChip
-import com.bbva.bonifica.ui.theme.BbvaBlue
-import com.bbva.bonifica.ui.theme.BbvaBlueLight
-import com.bbva.bonifica.ui.theme.BbvaGray700
-import com.bbva.bonifica.ui.theme.BbvaNavy
-import com.bbva.bonifica.ui.theme.BbvaWhite
 
 /**
  * Pantalla de Mis Operaciones (Módulo 5, ruta 14).
- * Muestra el listado de contratos/puntos de atención comerciales del cliente.
+ * Muestra el listado de contratos/puntos de atención comerciales agrupados por estado.
  */
 @Composable
 fun OperacionesScreen(
@@ -98,6 +94,9 @@ private fun OperacionesContent(
     onOperationSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val openOps = operations.filter { it.status == "OPEN" }
+    val otherOps = operations.filter { it.status != "OPEN" }
+
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -108,16 +107,43 @@ private fun OperacionesContent(
             Text(
                 text = stringResource(R.string.operaciones_subtitulo),
                 style = MaterialTheme.typography.bodyMedium,
-                color = BbvaGray700,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
         }
 
-        items(operations, key = { it.pointOfSaleReference }) { op ->
-            OperationCard(
-                operation = op,
-                onClick = { onOperationSelected(op.pointOfSaleReference) }
-            )
+        if (openOps.isNotEmpty()) {
+            item {
+                Text(
+                    text = "OPEN",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+            items(openOps, key = { it.pointOfSaleReference }) { op ->
+                OperationCard(
+                    operation = op,
+                    onClick = { onOperationSelected(op.pointOfSaleReference) }
+                )
+            }
+        }
+
+        if (otherOps.isNotEmpty()) {
+            item {
+                Text(
+                    text = "CLOSED",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+            items(otherOps, key = { it.pointOfSaleReference }) { op ->
+                OperationCard(
+                    operation = op,
+                    onClick = { onOperationSelected(op.pointOfSaleReference) }
+                )
+            }
         }
 
         item {
@@ -137,7 +163,7 @@ fun OperationCard(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = BbvaWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -148,14 +174,14 @@ fun OperationCard(
         ) {
             Surface(
                 shape = CircleShape,
-                color = BbvaBlueLight.copy(alpha = 0.12f),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
                 modifier = Modifier.size(44.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = channelIcon(operation.channel),
                         contentDescription = null,
-                        tint = BbvaBlue,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(22.dp)
                     )
                 }
@@ -171,8 +197,8 @@ fun OperationCard(
                 ) {
                     Text(
                         text = operation.pointOfSaleReference,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = BbvaNavy
+                        style = MaterialTheme.typography.titleMedium.copy(letterSpacing = 0.6.sp),
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     StatusChip(status = operation.status)
                 }
@@ -182,7 +208,7 @@ fun OperationCard(
                 Text(
                     text = "${operation.officeName} (${operation.city})",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = BbvaNavy
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(Modifier.height(4.dp))
@@ -194,12 +220,12 @@ fun OperationCard(
                     Text(
                         text = channelName(operation.channel),
                         style = MaterialTheme.typography.bodySmall,
-                        color = BbvaGray700
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
                         text = formatDate(operation.createdAt),
                         style = MaterialTheme.typography.bodySmall,
-                        color = BbvaGray700
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -209,7 +235,7 @@ fun OperationCard(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
-                tint = BbvaBlue,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(20.dp)
             )
         }

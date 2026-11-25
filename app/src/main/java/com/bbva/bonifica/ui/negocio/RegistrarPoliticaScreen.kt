@@ -42,11 +42,6 @@ import com.bbva.bonifica.ui.components.LabeledField
 import com.bbva.bonifica.ui.components.PrimaryButton
 import com.bbva.bonifica.ui.components.RoleGuard
 import com.bbva.bonifica.ui.operaciones.channelName
-import com.bbva.bonifica.ui.theme.BbvaBlue
-import com.bbva.bonifica.ui.theme.BbvaGray300
-import com.bbva.bonifica.ui.theme.BbvaGray700
-import com.bbva.bonifica.ui.theme.BbvaNavy
-import com.bbva.bonifica.ui.theme.BbvaWhite
 import com.bbva.bonifica.ui.theme.Success
 import kotlinx.coroutines.delay
 
@@ -279,7 +274,7 @@ private fun Seccion(text: String, modifier: Modifier = Modifier) {
         text = text.uppercase(),
         modifier = modifier.padding(top = 4.dp, bottom = 8.dp),
         style = MaterialTheme.typography.labelSmall,
-        color = BbvaGray700
+        color = MaterialTheme.colorScheme.onSurfaceVariant
     )
 }
 
@@ -297,7 +292,7 @@ private fun ChipSelector(
         Text(
             text = label,
             style = MaterialTheme.typography.labelLarge,
-            color = if (enabled) BbvaGray700 else BbvaGray700.copy(alpha = 0.6f)
+            color = if (enabled) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
         )
         Spacer(Modifier.height(6.dp))
         Row(
@@ -329,18 +324,22 @@ private fun ChipItem(
     Surface(
         modifier = modifier
             .clickable(enabled = enabled, onClick = onClick)
-            .border(1.dp, if (selected) BbvaBlue else BbvaGray300, RoundedCornerShape(50)),
+            .border(
+                1.dp,
+                if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                RoundedCornerShape(50)
+            ),
         shape = RoundedCornerShape(50),
-        color = if (selected) BbvaBlue else BbvaWhite
+        color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
     ) {
         Text(
             text = label,
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
             style = MaterialTheme.typography.labelMedium,
             color = when {
-                !enabled -> BbvaGray700.copy(alpha = 0.6f)
-                selected -> BbvaWhite
-                else -> BbvaGray700
+                !enabled -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                selected -> MaterialTheme.colorScheme.onPrimary
+                else -> MaterialTheme.colorScheme.onSurfaceVariant
             }
         )
     }
@@ -369,7 +368,7 @@ private fun AvisoExito(modifier: Modifier = Modifier) {
                 text = stringResource(R.string.politica_registrada),
                 modifier = Modifier.weight(1f),
                 style = MaterialTheme.typography.bodyMedium,
-                color = BbvaNavy
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }

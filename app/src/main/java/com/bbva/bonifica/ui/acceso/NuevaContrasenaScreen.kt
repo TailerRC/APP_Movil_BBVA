@@ -36,8 +36,6 @@ import com.bbva.bonifica.ui.components.LabeledField
 import com.bbva.bonifica.ui.components.PrimaryButton
 import com.bbva.bonifica.ui.components.RequirementRow
 import com.bbva.bonifica.ui.components.SecondaryButton
-import com.bbva.bonifica.ui.theme.BbvaGray700
-import com.bbva.bonifica.ui.theme.BbvaNavy
 
 /**
  * Nueva contraseña obligatoria (§12): requisitos visibles antes de fallar
@@ -77,7 +75,7 @@ fun NuevaContrasenaScreen(
                 Text(
                     text = stringResource(R.string.sesion_vencida),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = BbvaGray700,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
                 Spacer(Modifier.height(24.dp))
@@ -134,14 +132,14 @@ private fun Formulario(
         Text(
             text = stringResource(R.string.nueva_contrasena_titulo),
             style = MaterialTheme.typography.headlineMedium,
-            color = BbvaNavy,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(8.dp))
         Text(
             text = stringResource(R.string.nueva_contrasena_subtitulo),
             style = MaterialTheme.typography.bodyMedium,
-            color = BbvaGray700,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(24.dp))

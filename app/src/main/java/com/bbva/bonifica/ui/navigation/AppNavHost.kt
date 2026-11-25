@@ -81,7 +81,11 @@ private fun NavHostController.leaveSession(role: Role) {
 }
 
 @Composable
-fun AppNavHost(navController: NavHostController = rememberNavController()) {
+fun AppNavHost(
+    navController: NavHostController = rememberNavController(),
+    isDark: Boolean = false,
+    onToggleTheme: () -> Unit = {}
+) {
 
     // Scope de Activity (se crea fuera del NavHost): conserva el reto de nueva
     // contraseña y lo escrito en el login al ir y volver entre pantallas (§5).
@@ -100,6 +104,8 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         BonificaNavHost(
             navController = navController,
             acceso = acceso,
+            isDark = isDark,
+            onToggleTheme = onToggleTheme,
             modifier = Modifier.weight(1f)
         )
 
@@ -130,6 +136,8 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
 private fun BonificaNavHost(
     navController: NavHostController,
     acceso: AccesoViewModel,
+    isDark: Boolean = false,
+    onToggleTheme: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     NavHost(navController = navController, startDestination = Routes.SPLASH, modifier = modifier) {
@@ -191,6 +199,8 @@ private fun BonificaNavHost(
             )
             PerfilScreen(
                 viewModel = viewModel,
+                isDark = isDark,
+                onToggleTheme = onToggleTheme,
                 onNavigateToCatalogo = { navController.navigate(Routes.CATALOGO) },
                 onNavigateToOperaciones = { navController.navigate(Routes.OPERACIONES) },
                 onNavigateToPromociones = { navController.navigate(Routes.PROMOCIONES) },
@@ -404,6 +414,8 @@ private fun BonificaNavHost(
             )
             ConsultaClienteScreen(
                 viewModel = viewModel,
+                isDark = isDark,
+                onToggleTheme = onToggleTheme,
                 onClienteSelected = { ref -> navController.navigate(Routes.negocioCliente(ref)) },
                 onOperacionSelected = { ref -> navController.navigate(Routes.operacion(ref)) },
                 onBack = if (navController.previousBackStackEntry != null) {

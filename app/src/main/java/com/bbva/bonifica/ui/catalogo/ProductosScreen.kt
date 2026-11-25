@@ -1,6 +1,7 @@
 package com.bbva.bonifica.ui.catalogo
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -20,6 +22,8 @@ import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,10 +32,14 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bbva.bonifica.R
 import com.bbva.bonifica.core.UiState
@@ -43,15 +51,10 @@ import com.bbva.bonifica.ui.components.ErrorView
 import com.bbva.bonifica.ui.components.LoadingView
 import com.bbva.bonifica.ui.components.MoneyText
 import com.bbva.bonifica.ui.components.StatusChip
-import com.bbva.bonifica.ui.theme.BbvaBlue
-import com.bbva.bonifica.ui.theme.BbvaGray300
-import com.bbva.bonifica.ui.theme.BbvaGray700
-import com.bbva.bonifica.ui.theme.BbvaNavy
-import com.bbva.bonifica.ui.theme.BbvaWhite
 
 /**
  * Pantalla de productos de una categoría (Módulo 2, ruta 13).
- * Incluye buscador local por nombre y tarjetas con importe, frecuencia y estado.
+ * Incluye buscador local por nombre, chips de filtro por estado y tarjetas.
  */
 @Composable
 fun ProductosScreen(
@@ -98,6 +101,16 @@ private fun ProductosContent(
     onProductSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var statusFilter by remember { mutableStateOf("ALL") }
+
+    val displayedProducts = remember(data.filteredProducts, statusFilter) {
+        when (statusFilter) {
+            "AVAILABLE" -> data.filteredProducts.filter { it.status == "AVAILABLE" }
+            "DISCONTINUED" -> data.filteredProducts.filter { it.status == "DISCONTINUED" }
+            else -> data.filteredProducts
+        }
+    }
+
     Column(modifier = modifier.fillMaxSize()) {
         // Buscador local
         OutlinedTextField(
@@ -106,30 +119,69 @@ private fun ProductosContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
-            placeholder = { Text(stringResource(R.string.productos_buscar_placeholder), color = BbvaGray700) },
+            placeholder = {
+                Text(
+                    stringResource(R.string.productos_buscar_placeholder),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            },
             leadingIcon = {
-                Icon(Icons.Outlined.Search, contentDescription = null, tint = BbvaGray700)
+                Icon(
+                    Icons.Outlined.Search,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             },
             trailingIcon = if (data.searchQuery.isNotEmpty()) {
                 {
                     IconButton(onClick = { onSearchChange("") }) {
-                        Icon(Icons.Outlined.Clear, contentDescription = null, tint = BbvaGray700)
+                        Icon(
+                            Icons.Outlined.Clear,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 }
             } else null,
             singleLine = true,
             shape = RoundedCornerShape(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = BbvaBlue,
-                unfocusedBorderColor = BbvaGray300,
-                focusedContainerColor = BbvaWhite,
-                unfocusedContainerColor = BbvaWhite,
-                focusedTextColor = BbvaNavy,
-                unfocusedTextColor = BbvaNavy
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
             )
         )
 
-        if (data.filteredProducts.isEmpty()) {
+        // Chips de filtro por estado
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            listOf(
+                "ALL" to stringResource(R.string.filtro_todos),
+                "AVAILABLE" to stringResource(R.string.filtro_disponibles),
+                "DISCONTINUED" to stringResource(R.string.filtro_descontinuados)
+            ).forEach { (key, label) ->
+                FilterChip(
+                    selected = statusFilter == key,
+                    onClick = { statusFilter = key },
+                    label = { Text(label) },
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = MaterialTheme.colorScheme.primary,
+                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                )
+            }
+        }
+
+        if (displayedProducts.isEmpty()) {
             EmptyView(
                 message = stringResource(R.string.productos_sin_resultados),
                 modifier = Modifier.weight(1f)
@@ -141,7 +193,7 @@ private fun ProductosContent(
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(data.filteredProducts, key = { it.productReference }) { product ->
+                items(displayedProducts, key = { it.productReference }) { product ->
                     ProductCard(
                         product = product,
                         onClick = { onProductSelected(product.productReference) }
@@ -166,7 +218,7 @@ fun ProductCard(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = BbvaWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
@@ -181,8 +233,8 @@ fun ProductCard(
             ) {
                 Text(
                     text = product.productReference,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = BbvaGray700
+                    style = MaterialTheme.typography.labelMedium.copy(letterSpacing = 0.6.sp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 StatusChip(status = product.status)
             }
@@ -192,7 +244,7 @@ fun ProductCard(
             Text(
                 text = product.name,
                 style = MaterialTheme.typography.titleMedium,
-                color = BbvaNavy
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(Modifier.height(8.dp))
@@ -206,12 +258,12 @@ fun ProductCard(
                     Text(
                         text = stringResource(R.string.producto_comision_lista),
                         style = MaterialTheme.typography.bodySmall,
-                        color = BbvaGray700
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     MoneyText(
                         amount = product.listPrice,
                         currency = product.currency,
-                        color = BbvaNavy
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
@@ -219,13 +271,13 @@ fun ProductCard(
                     Text(
                         text = formatBillingFrequency(product.billingFrequency),
                         style = MaterialTheme.typography.bodySmall,
-                        color = BbvaGray700
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(Modifier.width(4.dp))
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                         contentDescription = null,
-                        tint = BbvaBlue,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(18.dp)
                     )
                 }

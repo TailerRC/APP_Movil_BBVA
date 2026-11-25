@@ -2,7 +2,6 @@ package com.bbva.bonifica.ui.promociones
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,21 +11,35 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CalendarToday
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bbva.bonifica.R
@@ -44,20 +57,14 @@ import com.bbva.bonifica.ui.components.LoadingView
 import com.bbva.bonifica.ui.components.SecondaryButton
 import com.bbva.bonifica.ui.components.StatusChip
 import com.bbva.bonifica.ui.operaciones.channelName
-import com.bbva.bonifica.ui.theme.BbvaBlue
-import com.bbva.bonifica.ui.theme.BbvaGray300
-import com.bbva.bonifica.ui.theme.BbvaGray700
-import com.bbva.bonifica.ui.theme.BbvaNavy
-import com.bbva.bonifica.ui.theme.BbvaWhite
 
 /**
  * Pantalla de Promociones (Módulo 4): dos pestañas, **Políticas** (ruta 6) y
  * **Campañas** (ruta 7).
  *
- * - Políticas: tarjetas con valor, alcance, monto mínimo, canal, moneda y vigencia;
- *   filtros de categoría, moneda y canal, y se ocultan las vencidas (§12).
- * - Campañas: selector de estado (`ACTIVE` por defecto) con nombre, segmento,
- *   canal y fechas.
+ * Diseño limpio y compacto:
+ * - Filtros mediante menús desplegables (Dropdowns) en una sola fila, sin saturar la pantalla.
+ * - Tarjetas con badge destacado del descuento y metadatos resumidos en una línea.
  */
 @Composable
 fun PromocionesScreen(
@@ -99,24 +106,23 @@ private fun PromocionesContent(
     viewModel: PromocionesViewModel,
     modifier: Modifier = Modifier
 ) {
+    val selectedTabIndex = if (data.tab == PromocionesTab.POLITICAS) 0 else 1
+
     Column(modifier = modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        TabRow(
+            selectedTabIndex = selectedTabIndex,
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.primary
         ) {
-            TabPill(
-                text = stringResource(R.string.promo_tab_politicas),
-                selected = data.tab == PromocionesTab.POLITICAS,
+            Tab(
+                selected = selectedTabIndex == 0,
                 onClick = { viewModel.selectTab(PromocionesTab.POLITICAS) },
-                modifier = Modifier.weight(1f)
+                text = { Text(stringResource(R.string.promo_tab_politicas)) }
             )
-            TabPill(
-                text = stringResource(R.string.promo_tab_campanas),
-                selected = data.tab == PromocionesTab.CAMPANAS,
+            Tab(
+                selected = selectedTabIndex == 1,
                 onClick = { viewModel.selectTab(PromocionesTab.CAMPANAS) },
-                modifier = Modifier.weight(1f)
+                text = { Text(stringResource(R.string.promo_tab_campanas)) }
             )
         }
 
@@ -149,39 +155,48 @@ private fun PoliticasTab(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        FilterSection(
-            label = stringResource(R.string.promo_filtro_categoria),
-            options = listOf(null to stringResource(R.string.filtro_todas)) +
-                POLICY_CATEGORIES.map { it to categoryName(it) },
-            selected = data.categoryFilter,
-            onSelect = viewModel::selectCategory
-        )
-        FilterSection(
-            label = stringResource(R.string.promo_filtro_moneda),
-            options = listOf(null to stringResource(R.string.filtro_todas)) +
-                POLICY_CURRENCIES.map { it to it },
-            selected = data.currencyFilter,
-            onSelect = viewModel::selectCurrency
-        )
-        FilterSection(
-            label = stringResource(R.string.promo_filtro_canal),
-            options = listOf(null to stringResource(R.string.filtro_todos)) +
-                POLICY_CHANNELS.map { it to channelName(it) },
-            selected = data.channelFilter,
-            onSelect = viewModel::selectChannel
-        )
+        // Fila única de 3 Dropdowns compactos
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            FilterDropdown(
+                label = stringResource(R.string.promo_filtro_categoria),
+                selectedLabel = data.categoryFilter?.let { categoryName(it) }
+                    ?: stringResource(R.string.filtro_todas),
+                options = listOf(null to stringResource(R.string.filtro_todas)) +
+                    POLICY_CATEGORIES.map { it to categoryName(it) },
+                onSelect = viewModel::selectCategory,
+                modifier = Modifier.weight(1.2f)
+            )
+            FilterDropdown(
+                label = stringResource(R.string.promo_filtro_moneda),
+                selectedLabel = data.currencyFilter ?: stringResource(R.string.filtro_todas),
+                options = listOf(null to stringResource(R.string.filtro_todas)) +
+                    POLICY_CURRENCIES.map { it to it },
+                onSelect = viewModel::selectCurrency,
+                modifier = Modifier.weight(0.9f)
+            )
+            FilterDropdown(
+                label = stringResource(R.string.promo_filtro_canal),
+                selectedLabel = data.channelFilter?.let { channelName(it) }
+                    ?: stringResource(R.string.filtro_todos),
+                options = listOf(null to stringResource(R.string.filtro_todos)) +
+                    POLICY_CHANNELS.map { it to channelName(it) },
+                onSelect = viewModel::selectChannel,
+                modifier = Modifier.weight(1.1f)
+            )
+        }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(14.dp))
 
         if (data.visiblePolicies.isEmpty()) {
-            // Sin resultados por los filtros (no por falta de datos): el aviso queda
-            // junto a los filtros para que el usuario pueda cambiarlos.
             Text(
                 text = stringResource(R.string.promo_politicas_sin_resultados),
                 style = MaterialTheme.typography.bodyMedium,
-                color = BbvaGray700,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(vertical = 12.dp)
             )
         } else {
@@ -196,31 +211,71 @@ private fun PoliticasTab(
 }
 
 @Composable
-private fun FilterSection(
+private fun <T> FilterDropdown(
     label: String,
-    options: List<Pair<String?, String>>,
-    selected: String?,
-    onSelect: (String?) -> Unit,
+    selectedLabel: String,
+    options: List<Pair<T, String>>,
+    onSelect: (T) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelLarge,
-            color = BbvaGray700
-        )
-        Spacer(Modifier.height(6.dp))
-        Row(
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(modifier = modifier) {
+        Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                .clickable { expanded = true }
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.7f),
+                    shape = RoundedCornerShape(12.dp)
+                ),
+            shape = RoundedCornerShape(12.dp),
+            color = MaterialTheme.colorScheme.surface
+        ) {
+            Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)) {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(Modifier.height(2.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = selectedLabel,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Icon(
+                        imageVector = Icons.Outlined.KeyboardArrowDown,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+            }
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
         ) {
             options.forEach { (value, text) ->
-                FilterChipItem(
-                    label = text,
-                    selected = value == selected,
-                    onClick = { onSelect(value) }
+                DropdownMenuItem(
+                    text = { Text(text) },
+                    onClick = {
+                        expanded = false
+                        onSelect(value)
+                    }
                 )
             }
         }
@@ -231,63 +286,86 @@ private fun FilterSection(
 private fun PolicyCard(policy: Policy, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = BbvaWhite),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Badge destacado con el porcentaje/monto del descuento
+            Surface(
+                shape = RoundedCornerShape(14.dp),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f),
+                modifier = Modifier.size(width = 72.dp, height = 64.dp)
             ) {
-                Text(
-                    text = policy.policyId,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = BbvaGray700
-                )
-                StatusChip(status = policy.status)
+                Box(contentAlignment = Alignment.Center) {
+                    Text(
+                        text = policyValue(policy),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.width(14.dp))
 
-            Text(
-                text = policy.name,
-                style = MaterialTheme.typography.titleMedium,
-                color = BbvaNavy
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = policy.policyId,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    StatusChip(status = policy.status)
+                }
 
-            Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(4.dp))
 
-            // El valor del descuento es el dato que destaca de la tarjeta (§12).
-            Text(
-                text = policyValue(policy),
-                style = MaterialTheme.typography.headlineSmall,
-                color = BbvaBlue
-            )
+                Text(
+                    text = policy.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
 
-            Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(6.dp))
 
-            FilaPromo(
-                label = stringResource(R.string.promo_alcance),
-                value = alcanceTexto(policy)
-            )
-            FilaPromo(
-                label = stringResource(R.string.promo_minimo),
-                value = minimoTexto(policy)
-            )
-            FilaPromo(
-                label = stringResource(R.string.promo_filtro_canal),
-                value = canalTexto(policy.channel)
-            )
-            FilaPromo(
-                label = stringResource(R.string.promo_filtro_moneda),
-                value = policy.currency
-            )
-            FilaPromo(
-                label = stringResource(R.string.promo_vigencia),
-                value = "${formatDate(policy.validFrom)} – ${formatDate(policy.validTo)}"
-            )
+                // Metadatos resumidos en una línea limpia
+                Text(
+                    text = "${alcanceTexto(policy)} · ${canalTexto(policy.channel)} · ${policy.currency}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Spacer(Modifier.height(4.dp))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Outlined.CalendarToday,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(12.dp)
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        text = "${formatDate(policy.validFrom)} – ${formatDate(policy.validTo)} · ${minimoTexto(policy)}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
         }
     }
 }
@@ -306,37 +384,24 @@ private fun CampanasTab(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        Text(
-            text = stringResource(R.string.promo_estado_campana),
-            style = MaterialTheme.typography.labelLarge,
-            color = BbvaGray700
+        FilterDropdown(
+            label = stringResource(R.string.promo_estado_campana),
+            selectedLabel = campaignStatusName(data.campaignStatus),
+            options = CAMPAIGN_STATUSES.map { it to campaignStatusName(it) },
+            onSelect = viewModel::selectCampaignStatus,
+            modifier = Modifier.fillMaxWidth()
         )
-        Spacer(Modifier.height(6.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            CAMPAIGN_STATUSES.forEach { status ->
-                FilterChipItem(
-                    label = campaignStatusName(status),
-                    selected = status == data.campaignStatus,
-                    onClick = { viewModel.selectCampaignStatus(status) }
-                )
-            }
-        }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(14.dp))
 
         when {
             data.campaignsLoading -> Box(
                 modifier = Modifier.fillMaxWidth().padding(24.dp),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(color = BbvaBlue)
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             }
 
             data.campaignsError != null -> {
@@ -351,7 +416,7 @@ private fun CampanasTab(
             data.campaigns.isEmpty() -> Text(
                 text = stringResource(R.string.promo_campanas_vacias),
                 style = MaterialTheme.typography.bodyMedium,
-                color = BbvaGray700,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(vertical = 12.dp)
             )
 
@@ -369,11 +434,11 @@ private fun CampanasTab(
 private fun CampaignCard(campaign: Campaign, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = BbvaWhite),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -381,34 +446,44 @@ private fun CampaignCard(campaign: Campaign, modifier: Modifier = Modifier) {
             ) {
                 Text(
                     text = campaign.campaignId,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = BbvaGray700
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 StatusChip(status = campaign.status)
             }
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(6.dp))
 
             Text(
                 text = campaign.name,
                 style = MaterialTheme.typography.titleMedium,
-                color = BbvaNavy
+                color = MaterialTheme.colorScheme.onSurface
             )
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(6.dp))
 
-            FilaPromo(
-                label = stringResource(R.string.promo_segmento),
-                value = segmentName(campaign.targetSegment)
+            Text(
+                text = "${segmentName(campaign.targetSegment)} · ${canalTexto(campaign.channel)}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            FilaPromo(
-                label = stringResource(R.string.promo_filtro_canal),
-                value = canalTexto(campaign.channel)
-            )
-            FilaPromo(
-                label = stringResource(R.string.promo_vigencia),
-                value = "${formatDate(campaign.startDate)} – ${formatDate(campaign.endDate)}"
-            )
+
+            Spacer(Modifier.height(4.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Outlined.CalendarToday,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(12.dp)
+                )
+                Spacer(Modifier.width(4.dp))
+                Text(
+                    text = "${formatDate(campaign.startDate)} – ${formatDate(campaign.endDate)}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }
@@ -416,69 +491,6 @@ private fun CampaignCard(campaign: Campaign, modifier: Modifier = Modifier) {
 // ---------------------------------------------------------------------------
 // Auxiliares
 // ---------------------------------------------------------------------------
-
-/** Píldora de pestaña / chip de filtro: azul cuando está seleccionado (§9). */
-@Composable
-private fun FilterChipItem(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        modifier = modifier
-            .clickable(onClick = onClick)
-            .border(1.dp, if (selected) BbvaBlue else BbvaGray300, RoundedCornerShape(50)),
-        shape = RoundedCornerShape(50),
-        color = if (selected) BbvaBlue else BbvaWhite
-    ) {
-        Text(
-            text = label,
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
-            style = MaterialTheme.typography.labelMedium,
-            color = if (selected) BbvaWhite else BbvaGray700
-        )
-    }
-}
-
-@Composable
-private fun TabPill(
-    text: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    FilterChipItem(
-        label = text,
-        selected = selected,
-        onClick = onClick,
-        modifier = modifier
-    )
-}
-
-@Composable
-private fun FilaPromo(label: String, value: String, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = BbvaGray700
-        )
-        Text(
-            text = value,
-            modifier = Modifier.weight(1f, fill = false),
-            style = MaterialTheme.typography.titleSmall,
-            color = BbvaNavy,
-            textAlign = TextAlign.End
-        )
-    }
-}
 
 /** "10%" / "S/ 20" según el tipo de descuento (§12). */
 private fun policyValue(policy: Policy): String = when (policy.discountType) {
@@ -494,9 +506,8 @@ private fun policyValue(policy: Policy): String = when (policy.discountType) {
 @Composable
 private fun alcanceTexto(policy: Policy): String = when (policy.scope) {
     "ALL" -> stringResource(R.string.promo_alcance_todo)
-    "CATEGORY" ->
-        "${stringResource(R.string.promo_alcance_categoria)}: ${categoryName(policy.scopeReference)}"
-    "PRODUCT" -> "${stringResource(R.string.promo_alcance_producto)}: ${policy.scopeReference}"
+    "CATEGORY" -> categoryName(policy.scopeReference)
+    "PRODUCT" -> policy.scopeReference
     else -> policy.scopeReference
 }
 
@@ -505,7 +516,7 @@ private fun minimoTexto(policy: Policy): String =
     if (policy.minimumAmount <= 0.0) {
         stringResource(R.string.promo_sin_minimo)
     } else {
-        formatMoney(policy.minimumAmount, policy.currency)
+        "Mín. ${formatMoney(policy.minimumAmount, policy.currency)}"
     }
 
 /** Canal `ALL` no es un canal concreto: se muestra como "Todos". */

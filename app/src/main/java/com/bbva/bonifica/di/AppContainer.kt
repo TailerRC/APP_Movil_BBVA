@@ -5,6 +5,7 @@ import com.bbva.bonifica.AppConfig
 import com.bbva.bonifica.data.auth.PrefsTokenStore
 import com.bbva.bonifica.data.auth.SessionManager
 import com.bbva.bonifica.data.mock.*
+import com.bbva.bonifica.data.preferences.ThemePreferences
 import com.bbva.bonifica.domain.repository.*
 
 /**
@@ -15,6 +16,9 @@ class AppContainer(context: Context) {
 
     /** Sesión compartida: la usan los Fake* de auth y, más adelante, los Remote*. */
     val sessionManager = SessionManager(PrefsTokenStore(context))
+
+    /** Preferencia de tema (claro/oscuro), persistida en DataStore. */
+    val themePreferences = ThemePreferences(context)
 
     private fun <T> pick(mock: T, remote: () -> T): T =
         if (AppConfig.USE_MOCK) mock else remote()

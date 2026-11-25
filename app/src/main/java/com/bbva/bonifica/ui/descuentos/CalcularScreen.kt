@@ -56,12 +56,6 @@ import com.bbva.bonifica.ui.components.PrimaryButton
 import com.bbva.bonifica.ui.components.SecondaryButton
 import com.bbva.bonifica.ui.components.StatusChip
 import com.bbva.bonifica.ui.operaciones.channelName
-import com.bbva.bonifica.ui.theme.BbvaBlue
-import com.bbva.bonifica.ui.theme.BbvaBlueLight
-import com.bbva.bonifica.ui.theme.BbvaGray300
-import com.bbva.bonifica.ui.theme.BbvaGray700
-import com.bbva.bonifica.ui.theme.BbvaNavy
-import com.bbva.bonifica.ui.theme.BbvaWhite
 import com.bbva.bonifica.ui.theme.Warning
 
 /**
@@ -69,7 +63,6 @@ import com.bbva.bonifica.ui.theme.Warning
  *
  * Selector de operación (las `OPEN` van primero, marcadas como recomendadas),
  * producto elegido en el catálogo, cantidad con stepper (≥ 1) y botón **Calcular**.
- * Sin producto la pantalla invita a entrar al catálogo en vez de fallar más tarde.
  */
 @Composable
 fun CalcularScreen(
@@ -135,12 +128,12 @@ private fun CalcularContent(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = BbvaWhite),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             data.operations.forEachIndexed { index, operation ->
                 if (index > 0) {
-                    HorizontalDivider(color = BbvaGray300.copy(alpha = 0.6f))
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f))
                 }
                 OperacionFila(
                     operation = operation,
@@ -171,7 +164,7 @@ private fun CalcularContent(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = BbvaWhite),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Row(
@@ -193,7 +186,7 @@ private fun CalcularContent(
                         .widthIn(min = 56.dp)
                         .padding(horizontal = 8.dp),
                     style = MaterialTheme.typography.titleLarge,
-                    color = BbvaNavy,
+                    color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center
                 )
                 StepperBoton(
@@ -230,7 +223,7 @@ private fun SeccionTitulo(text: String) {
     Text(
         text = text,
         style = MaterialTheme.typography.titleMedium,
-        color = BbvaNavy
+        color = MaterialTheme.colorScheme.onBackground
     )
 }
 
@@ -254,10 +247,10 @@ private fun OperacionFila(
             onClick = onClick,
             enabled = enabled,
             colors = RadioButtonDefaults.colors(
-                selectedColor = BbvaBlue,
-                unselectedColor = BbvaGray300,
-                disabledSelectedColor = BbvaBlue,
-                disabledUnselectedColor = BbvaGray300
+                selectedColor = MaterialTheme.colorScheme.primary,
+                unselectedColor = MaterialTheme.colorScheme.outline,
+                disabledSelectedColor = MaterialTheme.colorScheme.primary,
+                disabledUnselectedColor = MaterialTheme.colorScheme.outline
             )
         )
         Spacer(Modifier.width(8.dp))
@@ -265,22 +258,25 @@ private fun OperacionFila(
             Text(
                 text = operation.officeName,
                 style = MaterialTheme.typography.titleSmall,
-                color = BbvaNavy
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(Modifier.height(2.dp))
             Text(
                 text = "${operation.city} · ${channelName(operation.channel)}",
                 style = MaterialTheme.typography.bodySmall,
-                color = BbvaGray700
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         Spacer(Modifier.width(8.dp))
         if (operation.status == "OPEN") {
-            Surface(shape = RoundedCornerShape(50), color = BbvaBlueLight.copy(alpha = 0.15f)) {
+            Surface(
+                shape = RoundedCornerShape(50),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+            ) {
                 Text(
                     text = stringResource(R.string.calcular_recomendada),
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                    color = BbvaBlueLight,
+                    color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.labelMedium
                 )
             }
@@ -297,7 +293,7 @@ private fun ProductoCard(product: Product, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = BbvaWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
@@ -310,7 +306,7 @@ private fun ProductoCard(product: Product, modifier: Modifier = Modifier) {
                     text = product.name,
                     modifier = Modifier.weight(1f),
                     style = MaterialTheme.typography.titleMedium,
-                    color = BbvaNavy
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(Modifier.width(8.dp))
                 StatusChip(status = product.status)
@@ -326,9 +322,13 @@ private fun ProductoCard(product: Product, modifier: Modifier = Modifier) {
                 Text(
                     text = "${product.productReference} · ${product.category}",
                     style = MaterialTheme.typography.bodySmall,
-                    color = BbvaGray700
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                MoneyText(amount = product.listPrice, currency = product.currency, color = BbvaNavy)
+                MoneyText(
+                    amount = product.listPrice,
+                    currency = product.currency,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             }
 
             if (discontinued) {
@@ -336,7 +336,7 @@ private fun ProductoCard(product: Product, modifier: Modifier = Modifier) {
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    color = Warning.copy(alpha = 0.15f)
+                    color = Warning.copy(alpha = 0.18f)
                 ) {
                     Row(
                         modifier = Modifier.padding(12.dp),
@@ -345,7 +345,7 @@ private fun ProductoCard(product: Product, modifier: Modifier = Modifier) {
                         Icon(
                             imageVector = Icons.Outlined.Warning,
                             contentDescription = null,
-                            tint = BbvaNavy,
+                            tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(Modifier.width(10.dp))
@@ -353,13 +353,13 @@ private fun ProductoCard(product: Product, modifier: Modifier = Modifier) {
                             Text(
                                 text = stringResource(R.string.producto_no_disponible),
                                 style = MaterialTheme.typography.titleSmall,
-                                color = BbvaNavy
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(Modifier.height(2.dp))
                             Text(
                                 text = stringResource(R.string.producto_no_disponible_desc),
                                 style = MaterialTheme.typography.bodySmall,
-                                color = BbvaNavy
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -374,14 +374,14 @@ private fun SinProductoCard(onOpenCatalogo: () -> Unit, modifier: Modifier = Mod
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = BbvaWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
             Text(
                 text = stringResource(R.string.calcular_sin_producto),
                 style = MaterialTheme.typography.bodyMedium,
-                color = BbvaGray700
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(Modifier.height(12.dp))
             SecondaryButton(
@@ -402,7 +402,7 @@ private fun StepperBoton(
 ) {
     Surface(
         shape = CircleShape,
-        color = BbvaBlueLight.copy(alpha = 0.12f),
+        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
         modifier = modifier.size(44.dp)
     ) {
         Box(contentAlignment = Alignment.Center) {
@@ -410,7 +410,7 @@ private fun StepperBoton(
                 Icon(
                     imageVector = icon,
                     contentDescription = contentDescription,
-                    tint = if (enabled) BbvaBlue else BbvaGray300,
+                    tint = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                     modifier = Modifier.size(22.dp)
                 )
             }

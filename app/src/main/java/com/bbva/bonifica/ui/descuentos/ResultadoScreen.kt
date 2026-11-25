@@ -31,14 +31,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bbva.bonifica.R
 import com.bbva.bonifica.core.AppError
 import com.bbva.bonifica.core.UiState
 import com.bbva.bonifica.core.formatDate
-import com.bbva.bonifica.core.formatMoney
 import com.bbva.bonifica.core.toMessage
 import com.bbva.bonifica.domain.model.DiscountPricing
+import com.bbva.bonifica.ui.components.AmountDisplay
 import com.bbva.bonifica.ui.components.BonificaTopBar
 import com.bbva.bonifica.ui.components.ConfirmDialog
 import com.bbva.bonifica.ui.components.EmptyView
@@ -49,18 +50,11 @@ import com.bbva.bonifica.ui.components.PrimaryButton
 import com.bbva.bonifica.ui.components.SecondaryButton
 import com.bbva.bonifica.ui.components.StatusChip
 import com.bbva.bonifica.ui.components.paymentMethodName
-import com.bbva.bonifica.ui.theme.BbvaBlue
-import com.bbva.bonifica.ui.theme.BbvaGray300
-import com.bbva.bonifica.ui.theme.BbvaGray700
-import com.bbva.bonifica.ui.theme.BbvaNavy
-import com.bbva.bonifica.ui.theme.BbvaWhite
-import com.bbva.bonifica.ui.theme.Success
 
 /**
  * Pantalla de resultado (Módulo 3, ruta 2): bruto, política aplicada, descuento
- * resaltado y **neto grande**. Si el estado es `INITIATED` aparece el selector de
- * medio de pago con **Confirmar** (`APPLIED`) y **Anular** (`CANCELLED`), ambos con
- * `ConfirmDialog`; tras confirmar queda **Ver comprobante** (§12, §13).
+ * resaltado y **neto grande** con `AmountDisplay`. Si el estado es `INITIATED`
+ * aparece el selector de medio de pago con **Confirmar** y **Anular**.
  */
 @Composable
 fun ResultadoScreen(
@@ -128,19 +122,19 @@ private fun ResultadoContent(
             Text(
                 text = stringResource(R.string.resultado_pago_seccion),
                 style = MaterialTheme.typography.titleMedium,
-                color = BbvaNavy
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(Modifier.height(8.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = BbvaWhite),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 PAYMENT_METHODS.forEachIndexed { index, method ->
                     if (index > 0) {
-                        HorizontalDivider(color = BbvaGray300.copy(alpha = 0.6f))
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f))
                     }
                     MedioPagoFila(
                         method = method,
@@ -189,7 +183,7 @@ private fun ResultadoContent(
             else -> Text(
                 text = stringResource(R.string.resultado_anulado),
                 style = MaterialTheme.typography.bodyMedium,
-                color = BbvaGray700
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
@@ -207,6 +201,7 @@ private fun ResultadoContent(
                 confirmText = stringResource(
                     if (confirmar) R.string.resultado_confirmar else R.string.resultado_anular
                 ),
+                dismissText = stringResource(R.string.cancelar),
                 onConfirm = {
                     accion = null
                     if (confirmar) viewModel.confirmar() else viewModel.anular()
@@ -223,8 +218,8 @@ private fun ResumenCard(discount: DiscountPricing, modifier: Modifier = Modifier
 
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = BbvaWhite),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
@@ -235,13 +230,29 @@ private fun ResumenCard(discount: DiscountPricing, modifier: Modifier = Modifier
             ) {
                 Text(
                     text = discount.discountPricingId,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = BbvaGray700
+                    style = MaterialTheme.typography.labelLarge.copy(letterSpacing = 0.8.sp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 StatusChip(status = discount.status)
             }
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(20.dp))
+
+            AmountDisplay(
+                grossAmount = discount.grossAmount,
+                discountAmount = discount.discountAmount,
+                netAmount = discount.netAmount,
+                policyName = if (sinPolitica) {
+                    stringResource(R.string.resultado_sin_politica)
+                } else {
+                    discount.policyName
+                },
+                currency = discount.currency
+            )
+
+            Spacer(Modifier.height(20.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f))
+            Spacer(Modifier.height(8.dp))
 
             FilaResultado(
                 label = stringResource(R.string.resultado_producto),
@@ -259,43 +270,6 @@ private fun ResumenCard(discount: DiscountPricing, modifier: Modifier = Modifier
                 label = stringResource(R.string.resultado_fecha),
                 value = formatDate(discount.createdAt)
             )
-
-            Spacer(Modifier.height(4.dp))
-            HorizontalDivider(color = BbvaGray300.copy(alpha = 0.6f))
-            Spacer(Modifier.height(4.dp))
-
-            FilaResultado(
-                label = stringResource(R.string.resultado_bruto),
-                value = formatMoney(discount.grossAmount, discount.currency)
-            )
-            FilaResultado(
-                label = stringResource(R.string.resultado_politica),
-                value = if (sinPolitica) {
-                    stringResource(R.string.resultado_sin_politica)
-                } else {
-                    discount.policyName
-                }
-            )
-            // El ahorro siempre destaca (§3): en verde de éxito, como los chips APPLIED.
-            FilaResultado(
-                label = stringResource(R.string.resultado_descuento),
-                value = formatMoney(discount.discountAmount, discount.currency),
-                valueColor = Success
-            )
-
-            Spacer(Modifier.height(16.dp))
-
-            // El neto es el número más grande de la pantalla (§3, reglas de diseño).
-            Text(
-                text = stringResource(R.string.resultado_neto),
-                style = MaterialTheme.typography.bodyMedium,
-                color = BbvaGray700
-            )
-            Text(
-                text = formatMoney(discount.netAmount, discount.currency),
-                style = MaterialTheme.typography.headlineLarge,
-                color = BbvaNavy
-            )
         }
     }
 }
@@ -305,7 +279,7 @@ private fun FilaResultado(
     label: String,
     value: String,
     modifier: Modifier = Modifier,
-    valueColor: Color = BbvaNavy
+    valueColor: Color = MaterialTheme.colorScheme.onSurface
 ) {
     Row(
         modifier = modifier
@@ -317,7 +291,7 @@ private fun FilaResultado(
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = BbvaGray700
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(
             text = value,
@@ -348,17 +322,17 @@ private fun MedioPagoFila(
             onClick = onClick,
             enabled = enabled,
             colors = RadioButtonDefaults.colors(
-                selectedColor = BbvaBlue,
-                unselectedColor = BbvaGray300,
-                disabledSelectedColor = BbvaBlue,
-                disabledUnselectedColor = BbvaGray300
+                selectedColor = MaterialTheme.colorScheme.primary,
+                unselectedColor = MaterialTheme.colorScheme.outline,
+                disabledSelectedColor = MaterialTheme.colorScheme.primary,
+                disabledUnselectedColor = MaterialTheme.colorScheme.outline
             )
         )
         Spacer(Modifier.width(8.dp))
         Text(
             text = paymentMethodName(method),
             style = MaterialTheme.typography.bodyLarge,
-            color = BbvaNavy
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }

@@ -26,8 +26,6 @@ import com.bbva.bonifica.ui.components.ErrorView
 import com.bbva.bonifica.ui.components.LoadingView
 import com.bbva.bonifica.ui.components.TimelineItem
 import com.bbva.bonifica.ui.operaciones.channelName
-import com.bbva.bonifica.ui.theme.BbvaGray700
-import com.bbva.bonifica.ui.theme.BbvaNavy
 
 /**
  * Pantalla de Historial (Módulo 6, ruta 4): línea de tiempo
@@ -80,7 +78,7 @@ private fun HistorialContent(
         Text(
             text = stringResource(R.string.historial_subtitulo),
             style = MaterialTheme.typography.bodyMedium,
-            color = BbvaGray700
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(Modifier.height(12.dp))
 

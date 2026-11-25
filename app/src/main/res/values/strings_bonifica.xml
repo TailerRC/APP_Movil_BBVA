@@ -280,4 +280,12 @@
     <!-- Menú de desarrollo (§14): temporal, se retira con el flujo completo -->
     <string name="dev_menu_titulo">Menú de desarrollo</string>
     <string name="dev_menu_subtitulo">Atajos a todas las pantallas (reemplazar por Splash)</string>
+
+    <!-- Rediseño UX/UI -->
+    <string name="toggle_tema">Cambiar tema</string>
+    <string name="perfil_bienvenido">Bienvenido,</string>
+    <string name="filtro_disponibles">Disponibles</string>
+    <string name="filtro_descontinuados">Descontinuados</string>
+    <string name="operacion_tab_info">Información</string>
+    <string name="operacion_tab_descuentos">Descuentos</string>
 </resources>

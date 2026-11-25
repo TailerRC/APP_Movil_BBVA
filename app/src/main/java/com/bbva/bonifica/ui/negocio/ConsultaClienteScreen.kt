@@ -18,11 +18,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.DarkMode
+import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -49,11 +52,6 @@ import com.bbva.bonifica.ui.components.PrimaryButton
 import com.bbva.bonifica.ui.components.RoleGuard
 import com.bbva.bonifica.ui.components.StatusChip
 import com.bbva.bonifica.ui.operaciones.OperationCard
-import com.bbva.bonifica.ui.theme.BbvaBlue
-import com.bbva.bonifica.ui.theme.BbvaBlueLight
-import com.bbva.bonifica.ui.theme.BbvaGray700
-import com.bbva.bonifica.ui.theme.BbvaNavy
-import com.bbva.bonifica.ui.theme.BbvaWhite
 
 /**
  * Panel de Negocio · Consultar cliente (Módulo 7, ruta `negocio_consulta`).
@@ -72,6 +70,8 @@ fun ConsultaClienteScreen(
     onClienteSelected: (String) -> Unit,
     onOperacionSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
+    isDark: Boolean = false,
+    onToggleTheme: (() -> Unit)? = null,
     onBack: (() -> Unit)? = null
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -79,7 +79,18 @@ fun ConsultaClienteScreen(
     Column(modifier = modifier.fillMaxSize()) {
         BonificaTopBar(
             title = stringResource(R.string.negocio_consulta_titulo),
-            onBack = onBack
+            onBack = onBack,
+            actions = {
+                if (onToggleTheme != null) {
+                    IconButton(onClick = onToggleTheme) {
+                        Icon(
+                            imageVector = if (isDark) Icons.Outlined.LightMode else Icons.Outlined.DarkMode,
+                            contentDescription = stringResource(R.string.toggle_tema),
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                }
+            }
         )
 
         RoleGuard(role = Role.NEGOCIO, modifier = Modifier.weight(1f)) {
@@ -180,7 +191,7 @@ private fun ResultadoConsulta(
             Text(
                 text = stringResource(R.string.negocio_operaciones_seccion, data.operations.size),
                 style = MaterialTheme.typography.titleMedium,
-                color = BbvaNavy,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
@@ -190,7 +201,7 @@ private fun ResultadoConsulta(
                 Text(
                     text = stringResource(R.string.negocio_cliente_sin_operaciones),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = BbvaGray700
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         } else {
@@ -214,7 +225,7 @@ private fun FichaResumenCard(customer: Customer, onClick: () -> Unit, modifier: 
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = BbvaWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -225,14 +236,14 @@ private fun FichaResumenCard(customer: Customer, onClick: () -> Unit, modifier: 
         ) {
             Surface(
                 shape = CircleShape,
-                color = BbvaBlueLight.copy(alpha = 0.12f),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
                 modifier = Modifier.size(44.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = Icons.Outlined.Person,
                         contentDescription = null,
-                        tint = BbvaBlue,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(22.dp)
                     )
                 }
@@ -249,7 +260,7 @@ private fun FichaResumenCard(customer: Customer, onClick: () -> Unit, modifier: 
                     Text(
                         text = customer.name,
                         style = MaterialTheme.typography.titleMedium,
-                        color = BbvaNavy
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     StatusChip(status = customer.status)
                 }
@@ -259,7 +270,7 @@ private fun FichaResumenCard(customer: Customer, onClick: () -> Unit, modifier: 
                 Text(
                     text = customer.customerReference,
                     style = MaterialTheme.typography.bodySmall,
-                    color = BbvaGray700
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 Spacer(Modifier.height(2.dp))
@@ -267,7 +278,7 @@ private fun FichaResumenCard(customer: Customer, onClick: () -> Unit, modifier: 
                 Text(
                     text = "${customer.segment} · ${customer.city}",
                     style = MaterialTheme.typography.bodySmall,
-                    color = BbvaGray700
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -276,7 +287,7 @@ private fun FichaResumenCard(customer: Customer, onClick: () -> Unit, modifier: 
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = stringResource(R.string.negocio_ver_ficha),
-                tint = BbvaBlue,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(20.dp)
             )
         }

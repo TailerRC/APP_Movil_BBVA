@@ -40,10 +40,6 @@ import com.bbva.bonifica.ui.components.LoadingView
 import com.bbva.bonifica.ui.components.MoneyText
 import com.bbva.bonifica.ui.components.StatusChip
 import com.bbva.bonifica.ui.components.paymentMethodName
-import com.bbva.bonifica.ui.theme.BbvaBlue
-import com.bbva.bonifica.ui.theme.BbvaGray700
-import com.bbva.bonifica.ui.theme.BbvaNavy
-import com.bbva.bonifica.ui.theme.BbvaWhite
 
 /**
  * Pantalla de Pagos de una operación (Módulo 6, ruta 15): lista de pagos con
@@ -100,7 +96,7 @@ private fun PagosContent(
             Text(
                 text = stringResource(R.string.pagos_subtitulo),
                 style = MaterialTheme.typography.bodyMedium,
-                color = BbvaGray700,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
         }
@@ -129,7 +125,7 @@ private fun PaymentCard(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = BbvaWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -147,7 +143,7 @@ private fun PaymentCard(
                     Text(
                         text = payment.paymentOrderId,
                         style = MaterialTheme.typography.labelMedium,
-                        color = BbvaGray700
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     StatusChip(status = payment.status)
                 }
@@ -157,7 +153,7 @@ private fun PaymentCard(
                 MoneyText(
                     amount = payment.amount,
                     currency = payment.currency,
-                    color = BbvaNavy
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(Modifier.height(4.dp))
@@ -165,7 +161,7 @@ private fun PaymentCard(
                 Text(
                     text = paymentMethodName(payment.paymentMethod),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = BbvaNavy
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(Modifier.height(2.dp))
@@ -173,7 +169,7 @@ private fun PaymentCard(
                 Text(
                     text = formatDate(payment.paymentDate),
                     style = MaterialTheme.typography.bodySmall,
-                    color = BbvaGray700
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -182,7 +178,7 @@ private fun PaymentCard(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
-                tint = BbvaBlue,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(20.dp)
             )
         }

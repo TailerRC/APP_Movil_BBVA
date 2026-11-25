@@ -21,8 +21,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bbva.bonifica.R
 import com.bbva.bonifica.core.UiState
@@ -37,10 +39,6 @@ import com.bbva.bonifica.ui.components.LoadingView
 import com.bbva.bonifica.ui.components.PrimaryButton
 import com.bbva.bonifica.ui.components.StatusChip
 import com.bbva.bonifica.ui.components.paymentMethodName
-import com.bbva.bonifica.ui.theme.BbvaGray300
-import com.bbva.bonifica.ui.theme.BbvaGray700
-import com.bbva.bonifica.ui.theme.BbvaNavy
-import com.bbva.bonifica.ui.theme.BbvaWhite
 
 /**
  * Comprobante de pago (Módulo 6, ruta 12): tarjeta tipo recibo con importe,
@@ -96,8 +94,8 @@ private fun ComprobanteContent(
     ) {
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = BbvaWhite),
+            shape = RoundedCornerShape(20.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
@@ -108,38 +106,46 @@ private fun ComprobanteContent(
                 ) {
                     Text(
                         text = payment.paymentOrderId,
-                        style = MaterialTheme.typography.labelLarge,
-                        color = BbvaGray700
+                        style = MaterialTheme.typography.labelLarge.copy(letterSpacing = 0.8.sp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     StatusChip(status = payment.status)
                 }
 
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(16.dp))
 
                 Text(
                     text = stringResource(R.string.comprobante_recibo),
                     style = MaterialTheme.typography.titleMedium,
-                    color = BbvaNavy
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
-                Spacer(Modifier.height(8.dp))
-
-                Text(
-                    text = stringResource(R.string.comprobante_monto),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = BbvaGray700
-                )
+                Spacer(Modifier.height(16.dp))
 
                 // El importe es el número más grande del recibo (§3).
-                Text(
-                    text = formatMoney(payment.amount, payment.currency),
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = BbvaNavy
-                )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = formatMoney(payment.amount, payment.currency),
+                        style = MaterialTheme.typography.displayLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 36.sp
+                        ),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        text = stringResource(R.string.comprobante_monto),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
 
-                Spacer(Modifier.height(12.dp))
-                HorizontalDivider(color = BbvaGray300.copy(alpha = 0.6f))
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(20.dp))
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f))
+                Spacer(Modifier.height(8.dp))
 
                 FilaComprobante(
                     label = stringResource(R.string.comprobante_moneda),
@@ -187,13 +193,13 @@ private fun FilaComprobante(label: String, value: String, modifier: Modifier = M
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = BbvaGray700
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(
             text = value,
             modifier = Modifier.weight(1f, fill = false),
             style = MaterialTheme.typography.titleSmall,
-            color = BbvaNavy,
+            color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.End
         )
     }

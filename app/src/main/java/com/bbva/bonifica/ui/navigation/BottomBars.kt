@@ -13,6 +13,7 @@ import androidx.compose.material.icons.outlined.Receipt
 import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -25,10 +26,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.bbva.bonifica.R
 import com.bbva.bonifica.domain.model.Role
-import com.bbva.bonifica.ui.theme.BbvaBlue
-import com.bbva.bonifica.ui.theme.BbvaGray300
-import com.bbva.bonifica.ui.theme.BbvaGray700
-import com.bbva.bonifica.ui.theme.BbvaWhite
 
 /** Una pestaña: su ruta raíz, su etiqueta y las rutas que navega (§11.2). */
 private data class Tab(val route: String, val labelRes: Int, val rutas: List<String>)
@@ -106,9 +103,9 @@ fun RoleBottomBar(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        HorizontalDivider(color = BbvaGray300.copy(alpha = 0.7f))
+        HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
         NavigationBar(
-            containerColor = BbvaWhite,
+            containerColor = MaterialTheme.colorScheme.surface,
             windowInsets = WindowInsets.navigationBars
         ) {
             tabs(role).forEach { tab ->
@@ -135,11 +132,11 @@ fun RoleBottomBar(
                     },
                     alwaysShowLabel = true,
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = BbvaWhite,
-                        selectedTextColor = BbvaBlue,
-                        indicatorColor = BbvaBlue,
-                        unselectedIconColor = BbvaGray700,
-                        unselectedTextColor = BbvaGray700
+                        selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        indicatorColor = MaterialTheme.colorScheme.primary,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 )
             }
